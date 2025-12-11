@@ -1226,8 +1226,9 @@
                 <h1>Meet Jake</h1>
                 <p class="subtitle">Junior sales rep, struggling with discovery calls</p>
             </div>
-            <div class="slide-content" style="gap: 16px;">
-                <div style="display: flex; justify-content: center; margin-bottom: 0;">
+            <div class="slide-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start;">
+                <!-- Left Column: Character Card + Stats -->
+                <div style="display: flex; flex-direction: column; gap: 24px;">
                     <div class="character-card">
                         <div class="character-avatar jake">J</div>
                         <div>
@@ -1235,15 +1236,16 @@
                             <div class="character-role">Junior Sales Rep, 18 months tenure</div>
                         </div>
                     </div>
+
+                    <div class="stat-card" style="padding: 24px;">
+                        <span class="label">Current Performance</span>
+                        <span class="stat-large">21%</span>
+                        <span class="small">Conversion rate<br>Missing quota by 30%</span>
+                    </div>
                 </div>
 
-                <div class="stat-card" style="max-width: 400px; margin: 0 auto; padding: 20px;">
-                    <span class="label">Current Performance</span>
-                    <span class="stat-large">21%</span>
-                    <span class="small">Conversion rate<br>Missing quota by 30%</span>
-                </div>
-
-                <div class="notification-mock" style="margin: 0 auto; max-width: 400px;">
+                <!-- Right Column: Notification -->
+                <div class="notification-mock">
                     <div class="notification-header">
                         <div class="notification-icon">📱</div>
                         <div class="notification-app">Slack</div>
