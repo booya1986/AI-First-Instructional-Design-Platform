@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transform Your L&D | User Story</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===== DESIGN TOKENS ===== */
+        :root {
+            /* Colors */
+            --bg-base: #0B0B0B;
+            --bg-elevated: #111111;
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255,255,255,0.72);
+            --text-tertiary: rgba(255,255,255,0.56);
+            --border: rgba(255,255,255,0.12);
+            --dot-grid: rgba(255,255,255,0.06);
+            --button-bg: #1A1A1A;
+            --button-hover: #242424;
+
+            /* Character colors */
+            --maria-color: linear-gradient(135deg, #667eea, #764ba2);
+            --david-color: linear-gradient(135deg, #f093fb, #f5576c);
+            --sarah-color: linear-gradient(135deg, #4facfe, #00f2fe);
+            --jake-color: linear-gradient(135deg, #43e97b, #38f9d7);
+
+            /* Typography */
+            --font-heading: 'JetBrains Mono', ui-monospace, monospace;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+            /* Layout */
+            --slide-width: 1440px;
+            --slide-height: 900px;
+            --margin: 64px;
+            --gutter: 24px;
+        }
+
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-base);
+            color: var(--text-primary);
+            overflow: hidden;
+            line-height: 1.6;
+        }
+
+        /* ===== DOT GRID BACKGROUND ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, var(--dot-grid) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== SLIDE CONTAINER ===== */
+        #deck {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .slide {
+            position: absolute;
+            width: var(--slide-width);
+            height: var(--slide-height);
+            max-width: 100%;
+            max-height: 100%;
+            padding: var(--margin);
+            padding-bottom: 160px;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            overflow: hidden;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* First slide centered */
+        .slide[data-slide="1"] {
+            justify-content: center;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h1 {
+            font-family: var(--font-heading);
+            font-size: 42px;
+            font-weight: 600;
+            line-height: 1.1;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-family: var(--font-body);
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.4;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        .stat-large {
+            font-family: var(--font-heading);
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--text-primary);
+        }
+
+        .label {
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.4;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .small {
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.4;
+            color: var(--text-tertiary);
+        }
+
+        /* ===== LAYOUT ZONES ===== */
+        .slide-header {
+            margin-top: 32px;
+            margin-bottom: 32px;
+            text-align: center;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .slide-header {
+            animation-delay: 0.1s;
+        }
+
+        .slide[data-slide="1"] .slide-header {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ===== COMPONENTS ===== */
+        .card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            animation: floatIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .card:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .card:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .card:nth-child(3) { animation-delay: 0.3s; }
+        .slide.active .card:nth-child(4) { animation-delay: 0.4s; }
+
+        .stat-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px 20px;
+            text-align: center;
+            animation: floatIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .stat-card:nth-child(3) { animation-delay: 0.3s; }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        .two-column .column {
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .two-column .column:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .slide.active .two-column .column:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .column h3 {
+            font-family: var(--font-heading);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .column ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .column li {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .column li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--text-tertiary);
+        }
+
+        .callout {
+            text-align: center;
+            padding: 16px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin: 20px auto 0;
+            max-width: 720px;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .callout {
+            animation-delay: 0.5s;
+        }
+
+        /* ===== CHARACTER COMPONENTS ===== */
+        .character-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .character-card {
+            animation-delay: 0.2s;
+        }
+
+        .character-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-heading);
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .character-avatar.maria { background: var(--maria-color); }
+        .character-avatar.david { background: var(--david-color); }
+        .character-avatar.sarah { background: var(--sarah-color); }
+        .character-avatar.jake { background: var(--jake-color); }
+
+        .character-avatar.small {
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+        }
+
+        .character-name {
+            font-family: var(--font-heading);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .character-role {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* ===== CONVERSATION COMPONENTS ===== */
+        .conversation {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            animation: floatIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .message:nth-child(1) { animation-delay: 0.2s; }
+        .slide.active .message:nth-child(2) { animation-delay: 0.4s; }
+        .slide.active .message:nth-child(3) { animation-delay: 0.6s; }
+        .slide.active .message:nth-child(4) { animation-delay: 0.8s; }
+
+        .message.user {
+            flex-direction: row;
+        }
+
+        .message.ai {
+            flex-direction: row-reverse;
+        }
+
+        .message-bubble {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            max-width: 500px;
+        }
+
+        .message.ai .message-bubble {
+            background: #1a1a2e;
+        }
+
+        .message-sender {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            margin-bottom: 6px;
+        }
+
+        .message-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 6px;
+        }
+
+        /* ===== TIMELINE COMPONENTS ===== */
+        .user-timeline {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 32px 0;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .user-timeline {
+            animation-delay: 0.3s;
+        }
+
+        .timeline-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .timeline-step::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: var(--border);
+            z-index: -1;
+        }
+
+        .timeline-step:last-child::after {
+            display: none;
+        }
+
+        .timeline-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-elevated);
+            border: 2px solid var(--border);
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .timeline-step.active .timeline-dot {
+            background: var(--jake-color);
+            border-color: transparent;
+        }
+
+        .timeline-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-bottom: 4px;
+        }
+
+        .timeline-value {
+            font-family: var(--font-heading);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* ===== NOTIFICATION COMPONENTS ===== */
+        .notification-mock {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .notification-mock {
+            animation-delay: 0.3s;
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .notification-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #4A154B, #611f69);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .notification-app {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .notification-time {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-left: auto;
+        }
+
+        .notification-message {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .notification-action {
+            background: #1a1a2e;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 13px;
+            color: var(--text-primary);
+            text-align: center;
+            cursor: pointer;
+        }
+
+        /* ===== PROCESS COMPONENTS ===== */
+        .process-flow {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .process-step {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px 20px;
+            text-align: center;
+            animation: floatIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .process-step:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .process-step:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .process-step:nth-child(3) { animation-delay: 0.3s; }
+        .slide.active .process-step:nth-child(4) { animation-delay: 0.4s; }
+
+        .process-step .step-number {
+            font-family: var(--font-heading);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            margin-bottom: 12px;
+        }
+
+        .process-step .step-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .process-step .step-duration {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        /* ===== LOADING ANIMATION ===== */
+        .loading-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 32px;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .loading-indicator {
+            animation-delay: 0.3s;
+        }
+
+        .loading-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--text-tertiary);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        .loading-text {
+            font-family: var(--font-heading);
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        /* ===== QUOTE BLOCK ===== */
+        .quote-block {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .quote-block {
+            animation-delay: 0.2s;
+        }
+
+        .quote-block blockquote {
+            font-size: 24px;
+            line-height: 1.5;
+            color: var(--text-primary);
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .quote-block .quote-author {
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        /* ===== CTA ===== */
+        .cta {
+            text-align: center;
+            margin-top: 32px;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .cta {
+            animation-delay: 0.4s;
+        }
+
+        .cta p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .nav-controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            z-index: 100;
+            padding: 32px 64px;
+            background: linear-gradient(to top, rgba(11,11,11,0.95) 0%, rgba(11,11,11,0.8) 50%, rgba(11,11,11,0) 100%);
+            backdrop-filter: blur(8px);
+        }
+
+        .slide-counter {
+            position: absolute;
+            right: 64px;
+            font-size: 13px;
+            color: var(--text-tertiary);
+            font-family: var(--font-heading);
+        }
+
+        .nav-btn {
+            background: var(--button-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--button-hover);
+            border-color: var(--text-tertiary);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1440px) {
+            .slide {
+                transform: scale(0.9);
+            }
+
+            .slide.active {
+                transform: scale(0.9);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .slide {
+                transform: scale(0.7);
+            }
+
+            .slide.active {
+                transform: scale(0.7);
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .process-flow {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="deck">
+        <!-- SLIDE 1: Meet Maria -->
+        <div class="slide active" data-slide="1">
+            <div class="slide-header">
+                <div class="character-card" style="margin-bottom: 40px;">
+                    <div class="character-avatar maria">M</div>
+                    <div>
+                        <div class="character-name">Meet Maria</div>
+                        <div class="character-role">VP of Sales</div>
+                    </div>
+                </div>
+                <h1>Her team is missing quota</h1>
+                <p class="subtitle">She doesn't know why. And traditional L&D takes too long.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: The Struggle -->
+        <div class="slide" data-slide="2">
+            <div class="slide-header">
+                <h1>The Struggle</h1>
+                <p class="subtitle">Maria's sales team is underperforming</p>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div class="column">
+                        <h3>What Maria Sees</h3>
+                        <ul>
+                            <li>Q3 quota: Only 73% achieved</li>
+                            <li>Junior reps struggling most</li>
+                            <li>Lost deals at discovery stage</li>
+                            <li>Not sure if it's training, process, or leads</li>
+                            <li>Pressure from leadership to fix it</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <div class="stat-card">
+                            <span class="stat-large">73%</span>
+                            <span class="label">of target</span>
+                            <span class="small">23% conversion rate<br>vs. 45% top performers</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: Traditional Approach -->
+        <div class="slide" data-slide="3">
+            <div class="slide-header">
+                <h1>The Traditional Approach</h1>
+                <p class="subtitle">What happens when Maria contacts L&D</p>
+            </div>
+            <div class="slide-content">
+                <div class="process-flow" style="grid-template-columns: repeat(4, 1fr);">
+                    <div class="process-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Schedule Meetings</div>
+                        <div class="step-duration">1 week wait</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Needs Analysis</div>
+                        <div class="step-duration">2-3 weeks</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Course Development</div>
+                        <div class="step-duration">6-8 weeks</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Testing & Launch</div>
+                        <div class="step-duration">2 weeks</div>
+                    </div>
+                </div>
+                <div class="callout" style="margin-top: 48px;">
+                    <p style="font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--text-tertiary); margin-bottom: 8px;">12+ weeks</p>
+                    <p class="small">By the time training is ready, the quarter is over</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: A Better Way -->
+        <div class="slide" data-slide="4">
+            <div class="slide-header">
+                <h1>What if there was a better way?</h1>
+                <p class="subtitle">AI-powered instructional design that works at the speed of business</p>
+            </div>
+            <div class="slide-content">
+                <div style="text-align: center; margin: 64px 0;">
+                    <div class="callout" style="border: none; padding: 32px;">
+                        <p style="font-family: var(--font-heading); font-size: 72px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">&lt;48 hours</p>
+                        <p style="font-size: 18px; color: var(--text-secondary);">From problem identification to learners practicing new skills</p>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <p style="font-size: 16px; color: var(--text-tertiary);">Let's see how it works...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: Day 1 - The Conversation -->
+        <div class="slide" data-slide="5">
+            <div class="slide-header">
+                <h1>Monday Morning: The Conversation</h1>
+                <p class="subtitle">Maria opens Slack and starts talking to our AI</p>
+            </div>
+            <div class="slide-content">
+                <div class="conversation">
+                    <div class="message user">
+                        <div class="character-avatar small maria">M</div>
+                        <div class="message-bubble">
+                            <div class="message-sender">Maria</div>
+                            <div class="message-text">"My sales team is missing quarterly quotas. We're at 73% of target and I think it might be objection handling but I'm not sure."</div>
+                            <div class="message-time">9:05 AM</div>
+                        </div>
+                    </div>
+                    <div class="message ai">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; font-size: 14px;">🤖</div>
+                        <div class="message-bubble">
+                            <div class="message-sender">L&D Assistant</div>
+                            <div class="message-text">"I can help with that. When did you first notice the quota challenges? Is this affecting all reps or specific groups?"</div>
+                            <div class="message-time">9:05 AM</div>
+                        </div>
+                    </div>
+                    <div class="message user">
+                        <div class="character-avatar small maria">M</div>
+                        <div class="message-bubble">
+                            <div class="message-sender">Maria</div>
+                            <div class="message-text">"About 6 months ago. Mostly junior reps, under 2 years."</div>
+                            <div class="message-time">9:07 AM</div>
+                        </div>
+                    </div>
+                    <div class="message ai">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; font-size: 14px;">🤖</div>
+                        <div class="message-bubble">
+                            <div class="message-sender">L&D Assistant</div>
+                            <div class="message-text">"Could you share your sales performance data? I'd like to see conversion rates, deal stages, and rep performance. You can upload Excel or CSV files."</div>
+                            <div class="message-time">9:08 AM</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="callout" style="margin-top: 32px;">
+                    <p class="small">15-minute conversation, then Maria gets back to work</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: Behind the Scenes -->
+        <div class="slide" data-slide="6">
+            <div class="slide-header">
+                <h1>While Maria Works...</h1>
+                <p class="subtitle">AI analyzes data and identifies patterns</p>
+            </div>
+            <div class="slide-content">
+                <div class="card" style="max-width: 700px; margin: 0 auto;">
+                    <div class="loading-indicator">
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                    </div>
+                    <div class="loading-text" style="margin-bottom: 24px;">Analyzing 487 deals across 23 reps...</div>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                            <span style="position: absolute; left: 0;">✓</span>
+                            Analyzing sales data and conversion rates
+                        </li>
+                        <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                            <span style="position: absolute; left: 0;">✓</span>
+                            Comparing top vs. bottom performers
+                        </li>
+                        <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                            <span style="position: absolute; left: 0;">✓</span>
+                            Identifying where deals are lost
+                        </li>
+                        <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                            <span style="position: absolute; left: 0;">✓</span>
+                            Generating hypotheses about root causes
+                        </li>
+                    </ul>
+                </div>
+                <div class="notification-mock" style="margin-top: 48px;">
+                    <div class="notification-header">
+                        <div class="notification-icon">📧</div>
+                        <div class="notification-app">Email</div>
+                        <div class="notification-time">Tuesday 2:30 PM</div>
+                    </div>
+                    <div class="notification-message">
+                        <strong>Analysis complete!</strong> I've identified some patterns and have a few follow-up questions. Reply to this email or schedule a 15-min call.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: Human Expertise -->
+        <div class="slide" data-slide="7">
+            <div class="slide-header">
+                <h1>Wednesday: Consulting the Experts</h1>
+                <p class="subtitle">AI interviews David (L&D) and Sarah (top performer)</p>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div class="column">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <div class="character-avatar small david">D</div>
+                            <div>
+                                <div style="font-weight: 600; color: var(--text-primary);">David</div>
+                                <div style="font-size: 13px; color: var(--text-tertiary);">Instructional Designer</div>
+                            </div>
+                        </div>
+                        <h3>L&D Best Practices</h3>
+                        <ul>
+                            <li>Reviews data and hypotheses</li>
+                            <li>Discusses instructional strategies</li>
+                            <li>Shares organizational standards</li>
+                            <li>Provides assessment guidance</li>
+                        </ul>
+                        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-tertiary);">
+                            30-minute interview
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <div class="character-avatar small sarah">S</div>
+                            <div>
+                                <div style="font-weight: 600; color: var(--text-primary);">Sarah</div>
+                                <div style="font-size: 13px; color: var(--text-tertiary);">Top Performer (61% close rate)</div>
+                            </div>
+                        </div>
+                        <h3>Expert Insight</h3>
+                        <ul>
+                            <li>Shares her discovery call approach</li>
+                            <li>Explains the 7-question framework</li>
+                            <li>Describes qualification decisions</li>
+                            <li>Provides real scenarios and examples</li>
+                        </ul>
+                        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-tertiary);">
+                            25-minute interview
+                        </div>
+                    </div>
+                </div>
+                <div class="callout">
+                    <p class="small">AI doesn't replace humans—it collaborates with experts to create better solutions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: The Insights -->
+        <div class="slide" data-slide="8">
+            <div class="slide-header">
+                <h1>Thursday: The Root Cause</h1>
+                <p class="subtitle">AI presents findings to Maria and David</p>
+            </div>
+            <div class="slide-content">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 32px;">
+                    <div class="stat-card">
+                        <span class="label">Problem Identified</span>
+                        <span style="display: block; font-size: 18px; font-weight: 600; color: var(--text-primary); margin-top: 12px;">Discovery Call Quality</span>
+                        <span class="small">78% of losses happen before negotiation</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="label">Key Gap</span>
+                        <span style="display: block; font-size: 18px; font-weight: 600; color: var(--text-primary); margin-top: 12px;">Questions Asked</span>
+                        <span class="small">Junior reps: 3.2<br>Top performers: 7.4</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="label">Performance Gap</span>
+                        <span style="display: block; font-size: 18px; font-weight: 600; color: var(--text-primary); margin-top: 12px;">Conversion Rate</span>
+                        <span class="small">23% vs. 61%<br>(38 point difference)</span>
+                    </div>
+                </div>
+                <div class="card" style="max-width: 800px; margin: 0 auto;">
+                    <div class="label" style="margin-bottom: 12px;">RECOMMENDED SOLUTION</div>
+                    <p style="font-size: 16px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 16px;">
+                        "Discovery call skills training using Sarah's 7-question framework, focusing on needs analysis and qualification. Target: junior reps achieve 45% conversion rate within 3 months."
+                    </p>
+                    <div style="padding-top: 16px; border-top: 1px solid var(--border);">
+                        <strong style="color: var(--text-primary);">Estimated Impact:</strong>
+                        <span style="color: var(--text-secondary); font-size: 14px;"> $1.2M additional revenue per quarter</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: Decision Point -->
+        <div class="slide" data-slide="9">
+            <div class="slide-header">
+                <h1>Friday: Approval</h1>
+                <p class="subtitle">Maria and David review and approve the plan</p>
+            </div>
+            <div class="slide-content">
+                <div class="two-column" style="max-width: 900px; margin: 0 auto;">
+                    <div class="column">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <div class="character-avatar small maria">M</div>
+                            <div>
+                                <div style="font-weight: 600; color: var(--text-primary);">Maria</div>
+                                <div style="font-size: 13px; color: var(--text-tertiary);">Business Sponsor</div>
+                            </div>
+                        </div>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">✓</span>
+                                Root cause makes sense
+                            </li>
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">✓</span>
+                                ROI projection is compelling
+                            </li>
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">✓</span>
+                                Sarah's framework is proven
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <div class="character-avatar small david">D</div>
+                            <div>
+                                <div style="font-weight: 600; color: var(--text-primary);">David</div>
+                                <div style="font-size: 13px; color: var(--text-tertiary);">L&D Oversight</div>
+                            </div>
+                        </div>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">✓</span>
+                                Instructional approach is sound
+                            </li>
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">✓</span>
+                                Aligns with org standards
+                            </li>
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">✓</span>
+                                Performance-based design
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 48px;">
+                    <div style="background: var(--bg-base); border: 2px solid var(--text-primary); border-radius: 12px; padding: 24px; max-width: 500px; margin: 0 auto; animation: floatIn 0.8s ease-out forwards; opacity: 0;" class="card">
+                        <div style="font-family: var(--font-heading); font-size: 24px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">✓ Approved</div>
+                        <div style="font-size: 14px; color: var(--text-secondary);">Generate learning experience</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: Sarah's Role -->
+        <div class="slide" data-slide="10">
+            <div class="slide-header">
+                <h1>Sarah's Time Investment</h1>
+                <p class="subtitle">How SME collaboration actually works</p>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div class="column">
+                        <h3 style="color: var(--text-tertiary);">Traditional Approach</h3>
+                        <ul>
+                            <li>Full-day needs analysis workshop</li>
+                            <li>Multiple content review meetings</li>
+                            <li>Detailed storyboard reviews</li>
+                            <li>Video recording sessions</li>
+                            <li>Final course testing</li>
+                        </ul>
+                        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); font-family: var(--font-heading); font-weight: 600; color: var(--text-tertiary);">
+                            Total: 15-20 hours
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h3 style="color: var(--text-primary);">Our Platform</h3>
+                        <ul>
+                            <li>25-min AI interview (Wednesday)</li>
+                            <li>10-min email: Review outline</li>
+                            <li>10-min email: Share scenarios</li>
+                            <li>15-min optional: Test simulation</li>
+                        </ul>
+                        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); font-family: var(--font-heading); font-weight: 600; color: var(--text-primary);">
+                            Total: 35-50 minutes
+                        </div>
+                    </div>
+                </div>
+                <div class="callout">
+                    <p style="font-family: var(--font-heading); font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">95% time savings</p>
+                    <p class="small">SMEs share expertise without sacrificing their day</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: AI Creates -->
+        <div class="slide" data-slide="11">
+            <div class="slide-header">
+                <h1>Weekend: AI Generates</h1>
+                <p class="subtitle">Creating the learning experience</p>
+            </div>
+            <div class="slide-content">
+                <div class="card" style="max-width: 700px; margin: 0 auto;">
+                    <div class="loading-indicator">
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                    </div>
+                    <div class="loading-text" style="margin-bottom: 32px;">Generating adaptive learning experience...</div>
+
+                    <div style="background: var(--bg-base); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 14px; color: var(--text-secondary);">Discovery call simulations</span>
+                            <span style="font-size: 12px; color: var(--text-primary);">✓ Complete</span>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--bg-base); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 14px; color: var(--text-secondary);">7-question framework training</span>
+                            <span style="font-size: 12px; color: var(--text-primary);">✓ Complete</span>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--bg-base); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 14px; color: var(--text-secondary);">Qualification practice scenarios</span>
+                            <span style="font-size: 12px; color: var(--text-primary);">✓ Complete</span>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--bg-base); border-radius: 8px; padding: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 14px; color: var(--text-secondary);">Spaced repetition schedule</span>
+                            <span style="font-size: 12px; color: var(--text-primary);">✓ Complete</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="callout" style="margin-top: 48px;">
+                    <p class="small">Ready for David's review in 4 hours</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: Human Review -->
+        <div class="slide" data-slide="12">
+            <div class="slide-header">
+                <h1>Monday: Quality Review</h1>
+                <p class="subtitle">David validates instructional design</p>
+            </div>
+            <div class="slide-content">
+                <div class="card" style="max-width: 800px; margin: 0 auto;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+                        <div class="character-avatar small david">D</div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary);">David's Review Checklist</div>
+                            <div style="font-size: 13px; color: var(--text-tertiary);">30-minute review session</div>
+                        </div>
+                    </div>
+
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 16px; padding-left: 28px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                            <span style="position: absolute; left: 0; font-size: 18px;">✓</span>
+                            <strong style="color: var(--text-primary);">Pedagogy:</strong> Performance-first approach is correct
+                        </li>
+                        <li style="margin-bottom: 16px; padding-left: 28px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                            <span style="position: absolute; left: 0; font-size: 18px;">✓</span>
+                            <strong style="color: var(--text-primary);">Content Accuracy:</strong> Sarah's framework properly implemented
+                        </li>
+                        <li style="margin-bottom: 16px; padding-left: 28px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                            <span style="position: absolute; left: 0; font-size: 18px;">✓</span>
+                            <strong style="color: var(--text-primary);">Org Standards:</strong> Aligns with company terminology and values
+                        </li>
+                        <li style="margin-bottom: 16px; padding-left: 28px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                            <span style="position: absolute; left: 0; font-size: 18px;">✓</span>
+                            <strong style="color: var(--text-primary);">Accessibility:</strong> WCAG compliant, mobile-friendly
+                        </li>
+                        <li style="margin-bottom: 16px; padding-left: 28px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                            <span style="position: absolute; left: 0; font-size: 18px;">✓</span>
+                            <strong style="color: var(--text-primary);">Spaced Repetition:</strong> Schedule won't overload learners
+                        </li>
+                    </ul>
+                </div>
+                <div style="text-align: center; margin-top: 48px;">
+                    <div style="background: var(--bg-base); border: 2px solid var(--text-primary); border-radius: 12px; padding: 24px; max-width: 500px; margin: 0 auto; animation: floatIn 0.8s ease-out forwards; opacity: 0;" class="card">
+                        <div style="font-family: var(--font-heading); font-size: 24px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px;">✓ Approved for Launch</div>
+                        <div style="font-size: 14px; color: var(--text-secondary);">Deploying to 50 junior sales reps</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 13: Jake's First Day -->
+        <div class="slide" data-slide="13">
+            <div class="slide-header">
+                <h1>Meet Jake</h1>
+                <p class="subtitle">Junior sales rep, struggling with discovery calls</p>
+            </div>
+            <div class="slide-content">
+                <div style="display: flex; justify-content: center; margin-bottom: 40px;">
+                    <div class="character-card">
+                        <div class="character-avatar jake">J</div>
+                        <div>
+                            <div class="character-name">Jake</div>
+                            <div class="character-role">Junior Sales Rep, 18 months tenure</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card" style="max-width: 400px; margin: 0 auto 40px;">
+                    <span class="label">Current Performance</span>
+                    <span class="stat-large">21%</span>
+                    <span class="small">Conversion rate<br>Missing quota by 30%</span>
+                </div>
+
+                <div class="notification-mock">
+                    <div class="notification-header">
+                        <div class="notification-icon">📱</div>
+                        <div class="notification-app">Slack</div>
+                        <div class="notification-time">Tuesday 8:00 AM</div>
+                    </div>
+                    <div class="notification-message">
+                        <strong>New learning assignment!</strong> Practice discovery calls with our interactive simulation. Your first scenario is ready—takes about 15 minutes.
+                    </div>
+                    <div class="notification-action">
+                        Start Practice →
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 14: Learning by Doing -->
+        <div class="slide" data-slide="14">
+            <div class="slide-header">
+                <h1>Week 1, Day 1: First Simulation</h1>
+                <p class="subtitle">Jake practices with AI prospect—no pre-teaching</p>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div class="column">
+                        <h3>The Experience</h3>
+                        <ul>
+                            <li>Video avatar prospect appears</li>
+                            <li>Jake conducts full discovery call</li>
+                            <li>No hints during simulation (authentic assessment)</li>
+                            <li>AI evaluates performance at end</li>
+                            <li>15-minute session</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <div class="stat-card">
+                            <span class="label">Performance Score</span>
+                            <span class="stat-large">4/10</span>
+                            <span class="small" style="text-align: left; display: block; margin-top: 16px;">
+                                <strong style="color: var(--text-primary);">✓ Strong:</strong> Pain point discovery<br>
+                                <strong style="color: var(--text-primary);">✗ Weak:</strong> Qualification, decision-makers
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" style="margin-top: 32px; max-width: 800px; margin-left: auto; margin-right: auto;">
+                    <div class="label" style="margin-bottom: 12px;">NOW JAKE SEES THE FRAMEWORK</div>
+                    <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+                        After the assessment, Jake learns Sarah's 7-question framework with specific focus on his weak areas: qualification and identifying decision-makers. Video example shows how Sarah does it.
+                    </p>
+                </div>
+                <div class="callout">
+                    <p class="small">Learn by doing first, teach to the gap second</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 15: Week by Week -->
+        <div class="slide" data-slide="15">
+            <div class="slide-header">
+                <h1>Jake's 3-Week Journey</h1>
+                <p class="subtitle">Adaptive practice with spaced repetition</p>
+            </div>
+            <div class="slide-content">
+                <div class="user-timeline">
+                    <div class="timeline-step active">
+                        <div class="timeline-dot">1</div>
+                        <div class="timeline-label">Week 1, Day 1</div>
+                        <div class="timeline-value">4/10</div>
+                    </div>
+                    <div class="timeline-step active">
+                        <div class="timeline-dot">2</div>
+                        <div class="timeline-label">Week 1, Day 2</div>
+                        <div class="timeline-value">6/10</div>
+                    </div>
+                    <div class="timeline-step active">
+                        <div class="timeline-dot">3</div>
+                        <div class="timeline-label">Week 1, Day 4</div>
+                        <div class="timeline-value">7.5/10</div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-dot">✓</div>
+                        <div class="timeline-label">Mastery Achieved</div>
+                        <div class="timeline-value">Standard Met</div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 48px;">
+                    <div class="card">
+                        <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--text-primary);">Below Standard (Days 1-4)</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 8px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 13px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                System auto-schedules mandatory practice
+                            </li>
+                            <li style="margin-bottom: 8px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 13px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                Different scenario each time
+                            </li>
+                            <li style="margin-bottom: 8px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 13px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                Focused feedback on weak areas
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--text-primary);">After Mastery (Week 2+)</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 8px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 13px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                Jake chooses when to practice
+                            </li>
+                            <li style="margin-bottom: 8px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 13px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                Recommended: Review in 1 week
+                            </li>
+                            <li style="margin-bottom: 8px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 13px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                Harder scenarios to maintain skills
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 16: Real Impact -->
+        <div class="slide" data-slide="16">
+            <div class="slide-header">
+                <h1>3 Months Later: Jake's Results</h1>
+                <p class="subtitle">Real performance improvement in the field</p>
+            </div>
+            <div class="slide-content">
+                <div style="max-width: 900px; margin: 0 auto;">
+                    <svg width="100%" height="180" viewBox="0 0 900 180" style="margin-bottom: 32px;">
+                        <text x="0" y="20" font-family="var(--font-body)" font-size="14" fill="var(--text-tertiary)">Conversion Rate</text>
+
+                        <!-- Before bar -->
+                        <rect x="100" y="50" width="210" height="40" fill="var(--text-tertiary)" opacity="0.3" rx="4"/>
+                        <text x="80" y="75" text-anchor="end" font-family="var(--font-body)" font-size="13" fill="var(--text-secondary)">Before</text>
+                        <text x="320" y="75" font-family="var(--font-heading)" font-size="16" font-weight="600" fill="var(--text-primary)">21%</text>
+
+                        <!-- After bar -->
+                        <rect x="100" y="110" width="450" height="40" fill="var(--jake-color)" rx="4"/>
+                        <text x="80" y="135" text-anchor="end" font-family="var(--font-body)" font-size="13" fill="var(--text-secondary)">After</text>
+                        <text x="560" y="135" font-family="var(--font-heading)" font-size="16" font-weight="600" fill="var(--text-primary)">45%</text>
+
+                        <text x="325" y="170" text-anchor="middle" font-family="var(--font-body)" font-size="13" fill="var(--text-tertiary)">+24 percentage points improvement</text>
+                    </svg>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                        <div class="stat-card">
+                            <span class="label">Discovery Calls</span>
+                            <span style="display: block; font-family: var(--font-heading); font-size: 32px; font-weight: 700; margin: 12px 0;">Level 3</span>
+                            <span class="small">Proficient</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="label">Deals Closed</span>
+                            <span style="display: block; font-family: var(--font-heading); font-size: 32px; font-weight: 700; margin: 12px 0;">+18</span>
+                            <span class="small">Additional wins</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="label">Quota Attainment</span>
+                            <span style="display: block; font-family: var(--font-heading); font-size: 32px; font-weight: 700; margin: 12px 0;">112%</span>
+                            <span class="small">Now exceeding target</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 17: Continuous Support -->
+        <div class="slide" data-slide="17">
+            <div class="slide-header">
+                <h1>Month 4: Continuous Evolution</h1>
+                <p class="subtitle">The system monitors and adapts</p>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div class="column">
+                        <h3>System Monitors Real Performance</h3>
+                        <ul>
+                            <li>CRM data: Deal stages and outcomes</li>
+                            <li>Jake's conversion rate trends</li>
+                            <li>Call quality indicators</li>
+                            <li>Skills retention over time</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h3>AI Automatically Responds</h3>
+                        <ul>
+                            <li>Detects Jake ready for advanced skills</li>
+                            <li>Assigns objection handling module</li>
+                            <li>Schedules refresher if skills decay</li>
+                            <li>Generates new scenarios as needed</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="notification-mock" style="margin-top: 48px;">
+                    <div class="notification-header">
+                        <div class="notification-icon">📱</div>
+                        <div class="notification-app">Learning Platform</div>
+                        <div class="notification-time">Month 4, Week 2</div>
+                    </div>
+                    <div class="notification-message">
+                        <strong>Great progress, Jake!</strong> You've mastered discovery calls. Ready to level up? Objection handling training is now available.
+                    </div>
+                    <div class="notification-action">
+                        View New Module →
+                    </div>
+                </div>
+
+                <div class="callout">
+                    <p class="small">Learning never stops—it evolves with the learner</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 18: Team Transformation -->
+        <div class="slide" data-slide="18">
+            <div class="slide-header">
+                <h1>The Entire Team Transforms</h1>
+                <p class="subtitle">All 50 junior reps show improvement</p>
+            </div>
+            <div class="slide-content">
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px;">
+                    <div class="stat-card">
+                        <span class="label">Jake</span>
+                        <span style="display: block; font-size: 28px; font-weight: 700; margin: 8px 0; color: var(--text-primary);">21→45%</span>
+                        <span class="small">+24 pts</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="label">Emma</span>
+                        <span style="display: block; font-size: 28px; font-weight: 700; margin: 8px 0; color: var(--text-primary);">25→41%</span>
+                        <span class="small">+16 pts</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="label">Marcus</span>
+                        <span style="display: block; font-size: 28px; font-weight: 700; margin: 8px 0; color: var(--text-primary);">19→38%</span>
+                        <span class="small">+19 pts</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="label">Avg Team</span>
+                        <span style="display: block; font-size: 28px; font-weight: 700; margin: 8px 0; color: var(--text-primary);">23→42%</span>
+                        <span class="small">+19 pts</span>
+                    </div>
+                </div>
+
+                <div class="card" style="max-width: 800px; margin: 0 auto;">
+                    <div class="label" style="margin-bottom: 16px;">COMPLETION & ENGAGEMENT</div>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px;">
+                        <div>
+                            <div style="font-family: var(--font-heading); font-size: 48px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">95%</div>
+                            <div style="font-size: 14px; color: var(--text-secondary);">Completion rate<br><span style="font-size: 12px; color: var(--text-tertiary);">vs. 20-30% industry average</span></div>
+                        </div>
+                        <div>
+                            <div style="font-family: var(--font-heading); font-size: 48px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">87</div>
+                            <div style="font-size: 14px; color: var(--text-secondary);">Additional deals closed<br><span style="font-size: 12px; color: var(--text-tertiary);">by the entire cohort</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 19: Business Impact -->
+        <div class="slide" data-slide="19">
+            <div class="slide-header">
+                <h1>Maria's Business Results</h1>
+                <p class="subtitle">Measurable ROI with statistical rigor</p>
+            </div>
+            <div class="slide-content">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px;">
+                    <div class="card">
+                        <div class="label" style="margin-bottom: 16px;">INVESTMENT</div>
+                        <div style="margin-bottom: 12px;">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Platform:</span>
+                            <span style="color: var(--text-primary); font-weight: 600; float: right;">$15,000</span>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Time:</span>
+                            <span style="color: var(--text-primary); font-weight: 600; float: right;">$12,500</span>
+                        </div>
+                        <div style="padding-top: 12px; border-top: 1px solid var(--border);">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Total:</span>
+                            <span style="color: var(--text-primary); font-weight: 700; font-size: 20px; font-family: var(--font-heading); float: right;">$27,500</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="label" style="margin-bottom: 16px;">RETURN</div>
+                        <div style="margin-bottom: 12px;">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Trained:</span>
+                            <span style="color: var(--text-primary); font-weight: 600; float: right;">23% → 45%</span>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Control:</span>
+                            <span style="color: var(--text-tertiary); font-weight: 600; float: right;">23% → 24%</span>
+                        </div>
+                        <div style="padding-top: 12px; border-top: 1px solid var(--border);">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Revenue:</span>
+                            <span style="color: var(--text-primary); font-weight: 700; font-size: 20px; font-family: var(--font-heading); float: right;">$1.2M</span>
+                        </div>
+                    </div>
+                    <div class="card" style="background: var(--bg-base); border: 2px solid var(--text-primary);">
+                        <div class="label" style="margin-bottom: 16px; color: var(--text-primary);">ROI</div>
+                        <div style="text-align: center; padding: 20px 0;">
+                            <div style="font-family: var(--font-heading); font-size: 56px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">42.7:1</div>
+                            <div class="small">Every $1 invested<br>generated $42.70</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="max-width: 800px; margin: 0 auto;">
+                    <div class="label" style="margin-bottom: 12px;">METHODOLOGY</div>
+                    <p style="font-size: 14px; line-height: 1.6; color: var(--text-secondary);">
+                        50 trained reps vs. 50 matched control group. 6-month measurement period. Statistical significance: 95% confidence (p &lt; 0.001). Control group shows minimal improvement (+1 point) ruling out external factors.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 20: Maria's Reflection -->
+        <div class="slide" data-slide="20">
+            <div class="slide-header">
+                <h1>This is How L&D Should Work</h1>
+                <p class="subtitle">Maria reflects on the transformation</p>
+            </div>
+            <div class="slide-content">
+                <div class="quote-block">
+                    <div style="display: flex; justify-content: center; margin-bottom: 32px;">
+                        <div class="character-avatar maria" style="width: 100px; height: 100px; font-size: 40px;">M</div>
+                    </div>
+                    <blockquote>
+                        "In one week, we went from problem to solution. My team got exactly the training they needed, when they needed it. And for the first time, I can prove L&D's impact with real numbers."
+                    </blockquote>
+                    <div class="quote-author">
+                        <div>
+                            <strong>Maria Chen</strong> • VP of Sales
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 900px; margin: 48px auto 0;">
+                    <div style="text-align: center;">
+                        <div style="font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">1 week</div>
+                        <div style="font-size: 13px; color: var(--text-tertiary);">vs. 12+ weeks traditional</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">$1.2M</div>
+                        <div style="font-size: 13px; color: var(--text-tertiary);">Incremental revenue</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">95%</div>
+                        <div style="font-size: 13px; color: var(--text-tertiary);">Learner completion</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 21: Your Story -->
+        <div class="slide" data-slide="21">
+            <div class="slide-header">
+                <h1>Imagine Your Team's Transformation</h1>
+                <p class="subtitle">This could be your story</p>
+            </div>
+            <div class="slide-content">
+                <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 48px;">
+                        <div class="character-card">
+                            <div class="character-avatar small maria">M</div>
+                            <div class="small">Your Stakeholder</div>
+                        </div>
+                        <div class="character-card">
+                            <div class="character-avatar small david">D</div>
+                            <div class="small">Your L&D Team</div>
+                        </div>
+                        <div class="character-card">
+                            <div class="character-avatar small sarah">S</div>
+                            <div class="small">Your SMEs</div>
+                        </div>
+                        <div class="character-card">
+                            <div class="character-avatar small jake">J</div>
+                            <div class="small">Your Learners</div>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 20px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 48px;">
+                        Your business challenges deserve solutions that work at the speed of business. Your learners deserve experiences that actually improve their performance. Your L&D team deserves to prove their impact.
+                    </div>
+
+                    <div class="cta">
+                        <p style="font-size: 24px; font-weight: 600; color: var(--text-primary); margin-bottom: 24px;">Let's transform your L&D together</p>
+                        <p class="small" style="font-size: 14px; margin-bottom: 8px;">Schedule a demo to see your story</p>
+                        <p class="small" style="font-size: 14px; color: var(--text-primary);">hello@platform.ai • platform.ai/demo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn" onclick="prevSlide()">← Previous</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Next →</button>
+        <div class="slide-counter" id="slideCounter">1 / 21</div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 21;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+
+            if (n > totalSlides) currentSlide = totalSlides;
+            if (n < 1) currentSlide = 1;
+
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            slides[currentSlide - 1].classList.add('active');
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = (currentSlide === 1);
+            document.getElementById('nextBtn').disabled = (currentSlide === totalSlides);
+
+            // Update slide counter
+            document.getElementById('slideCounter').textContent = currentSlide + ' / ' + totalSlides;
+
+            // Update URL hash
+            window.location.hash = currentSlide;
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                if (currentSlide < totalSlides) nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (currentSlide > 1) prevSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                currentSlide = 1;
+                showSlide(currentSlide);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                currentSlide = totalSlides;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                if (currentSlide < totalSlides) nextSlide();
+            }
+            if (touchEndX > touchStartX + 50) {
+                if (currentSlide > 1) prevSlide();
+            }
+        }
+
+        // URL hash routing
+        window.addEventListener('load', function() {
+            const hash = parseInt(window.location.hash.replace('#', ''));
+            if (hash >= 1 && hash <= totalSlides) {
+                currentSlide = hash;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Auto-hide cursor in presentation mode
+        let cursorTimeout;
+        document.addEventListener('mousemove', function() {
+            document.body.style.cursor = 'default';
+            clearTimeout(cursorTimeout);
+            cursorTimeout = setTimeout(function() {
+                document.body.style.cursor = 'none';
+            }, 3000);
+        });
+
+        // Initialize
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>

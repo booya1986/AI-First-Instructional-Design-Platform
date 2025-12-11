@@ -1,7 +1,8 @@
 # Ignore everything
 *
 
-# Except the investor deck HTML and README
+# Except the presentation decks and README
 !.gitignore
 !investor_deck.html
+!user_story_deck.html
 !README.md
