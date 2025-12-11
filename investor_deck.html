@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-First Instructional Design Platform | Investor Deck</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ===== DESIGN TOKENS ===== */
+        :root {
+            /* Colors */
+            --bg-base: #0B0B0B;
+            --bg-elevated: #111111;
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255,255,255,0.72);
+            --text-tertiary: rgba(255,255,255,0.56);
+            --border: rgba(255,255,255,0.12);
+            --dot-grid: rgba(255,255,255,0.06);
+            --button-bg: #1A1A1A;
+            --button-hover: #242424;
+
+            /* Greyscale segments for data viz */
+            --grey-1: #FFFFFF;
+            --grey-2: #EAEAEA;
+            --grey-3: #D2D2D2;
+            --grey-4: #B9B9B9;
+            --grey-5: #9F9F9F;
+            --grey-6: #868686;
+            --grey-7: #6C6C6C;
+
+            /* Typography */
+            --font-heading: 'JetBrains Mono', ui-monospace, monospace;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+            /* Layout */
+            --slide-width: 1440px;
+            --slide-height: 900px;
+            --margin: 64px;
+            --gutter: 24px;
+        }
+
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-base);
+            color: var(--text-primary);
+            overflow: hidden;
+            line-height: 1.6;
+        }
+
+        /* ===== DOT GRID BACKGROUND ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, var(--dot-grid) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== SLIDE CONTAINER ===== */
+        #deck {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .slide {
+            position: absolute;
+            width: var(--slide-width);
+            height: var(--slide-height);
+            max-width: 100%;
+            max-height: 100%;
+            padding: var(--margin);
+            padding-bottom: 160px; /* Space for nav controls + extra buffer */
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            overflow: hidden; /* Prevent content from spilling into footer */
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* First slide centered */
+        .slide[data-slide="1"] {
+            justify-content: center;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h1 {
+            font-family: var(--font-heading);
+            font-size: 42px;
+            font-weight: 600;
+            line-height: 1.1;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-family: var(--font-body);
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.4;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        .stat-large {
+            font-family: var(--font-heading);
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--text-primary);
+        }
+
+        .stat-medium {
+            font-family: var(--font-heading);
+            font-size: 40px;
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--text-primary);
+        }
+
+        .label {
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.4;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .small {
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.4;
+            color: var(--text-tertiary);
+        }
+
+        /* ===== LAYOUT ZONES ===== */
+        .slide-header {
+            margin-top: 32px;
+            margin-bottom: 32px;
+            text-align: center;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .slide-header {
+            animation-delay: 0.1s;
+        }
+
+        /* First slide header (no top margin, centered) */
+        .slide[data-slide="1"] .slide-header {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .slide-footer {
+            margin-top: auto;
+            padding-top: 24px;
+            display: none; /* Hide individual slide footers */
+        }
+
+        /* ===== COMPONENTS ===== */
+        .card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            animation: floatIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide.active .card:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .card:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .card:nth-child(3) { animation-delay: 0.3s; }
+        .slide.active .card:nth-child(4) { animation-delay: 0.4s; }
+
+        .slide.active .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .slide.active .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .card-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .card-grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .card-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .stat-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px 20px;
+            text-align: center;
+            animation: floatIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .stat-card .stat-large {
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .stat-card .label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .stat-card .small {
+            display: block;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        .two-column .column {
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .two-column .column:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .slide.active .two-column .column:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .column h3 {
+            font-family: var(--font-heading);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .column ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .column li {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .column li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--text-tertiary);
+        }
+
+        .column .result {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .callout {
+            text-align: center;
+            padding: 16px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin: 20px auto 0;
+            max-width: 720px;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .callout {
+            animation-delay: 0.5s;
+        }
+
+        .callout .small {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Problem cards */
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .problem-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            animation: floatIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .problem-card:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .problem-card:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .problem-card:nth-child(3) { animation-delay: 0.3s; }
+        .slide.active .problem-card:nth-child(4) { animation-delay: 0.4s; }
+        .slide.active .problem-card:nth-child(5) { animation-delay: 0.5s; }
+
+        .problem-card h3 {
+            font-family: var(--font-heading);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .problem-card p {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        /* Process flow */
+        .process-flow {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            margin: 0;
+        }
+
+        .process-step {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 12px;
+            text-align: center;
+            animation: floatIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .process-step:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .process-step:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .process-step:nth-child(3) { animation-delay: 0.3s; }
+        .slide.active .process-step:nth-child(4) { animation-delay: 0.4s; }
+        .slide.active .process-step:nth-child(5) { animation-delay: 0.5s; }
+        .slide.active .process-step:nth-child(6) { animation-delay: 0.6s; }
+
+        .process-step .step-number {
+            font-family: var(--font-heading);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            margin-bottom: 6px;
+        }
+
+        .process-step .step-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .process-step .step-detail {
+            font-size: 11px;
+            line-height: 1.3;
+            color: var(--text-tertiary);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active table {
+            animation-delay: 0.2s;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        td:first-child {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Timeline */
+        .timeline {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 0;
+        }
+
+        .timeline-phase {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px 20px;
+            animation: floatIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .timeline-phase:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .timeline-phase:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .timeline-phase:nth-child(3) { animation-delay: 0.3s; }
+
+        .timeline-phase h3 {
+            font-family: var(--font-heading);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .timeline-phase ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .timeline-phase li {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .timeline-phase li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--text-tertiary);
+        }
+
+        .timeline-phase .target {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Architecture */
+        .arch-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .arch-layer {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Animations already defined in SVG STYLES section */
+
+        .arch-layer .layer-name {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+
+        .arch-layer .layer-detail {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        /* Tech badges */
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 16px 0 0;
+        }
+
+        .tech-badge {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 6px 14px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Quote */
+        .quote-block {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .quote-block {
+            animation-delay: 0.2s;
+        }
+
+        .quote-block blockquote {
+            font-size: 20px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 0;
+        }
+
+        .quote-block .quote-author {
+            font-size: 14px;
+            color: var(--text-tertiary);
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            margin-top: 32px;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .cta {
+            animation-delay: 0.4s;
+        }
+
+        .cta p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .cta .small {
+            font-size: 13px;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .pagination {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            font-family: var(--font-heading);
+        }
+
+        .nav-controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            z-index: 100;
+            padding: 32px 64px;
+            background: linear-gradient(to top, rgba(11,11,11,0.95) 0%, rgba(11,11,11,0.8) 50%, rgba(11,11,11,0) 100%);
+            backdrop-filter: blur(8px);
+        }
+
+        .slide-counter {
+            position: absolute;
+            right: 64px;
+            font-size: 13px;
+            color: var(--text-tertiary);
+            font-family: var(--font-heading);
+        }
+
+        .nav-btn {
+            background: var(--button-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--button-hover);
+            border-color: var(--text-tertiary);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Progress dots */
+        .progress-dots {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 99;
+            pointer-events: none;
+        }
+
+        .progress-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-tertiary);
+            opacity: 0.3;
+            transition: opacity 0.2s ease;
+        }
+
+        .progress-dot.active {
+            opacity: 1;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1440px) {
+            .slide {
+                transform: scale(0.9);
+            }
+
+            .slide.active {
+                transform: scale(0.9);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .slide {
+                transform: scale(0.7);
+            }
+
+            .slide.active {
+                transform: scale(0.7);
+            }
+
+            .two-column,
+            .card-grid-2,
+            .card-grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== SVG STYLES ===== */
+        .donut-chart {
+            max-width: 500px;
+            margin: 0 auto;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .donut-chart {
+            animation-delay: 0.2s;
+        }
+
+        .bar-chart {
+            margin: 32px 0;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .bar-chart {
+            animation-delay: 0.3s;
+        }
+
+        .bar {
+            transition: opacity 0.2s ease;
+        }
+
+        /* Architecture stack animation */
+        .arch-stack {
+            animation: floatIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .arch-stack {
+            animation-delay: 0.2s;
+        }
+
+        .arch-layer {
+            animation: floatIn 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .slide.active .arch-layer:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .arch-layer:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .arch-layer:nth-child(3) { animation-delay: 0.3s; }
+        .slide.active .arch-layer:nth-child(4) { animation-delay: 0.4s; }
+        .slide.active .arch-layer:nth-child(5) { animation-delay: 0.5s; }
+
+        /* ===== PRINT ===== */
+        @media print {
+            .nav-controls,
+            .progress-dots {
+                display: none;
+            }
+
+            .slide {
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="deck">
+        <!-- SLIDE 1: Title -->
+        <div class="slide active" data-slide="1">
+            <div class="slide-header">
+                <h1>AI-First Instructional Design Platform</h1>
+                <p class="subtitle">Transform L&D from Cost Center to Profit Driver</p>
+                <p class="small" style="text-align: center; margin-top: 40px;">Investor Presentation</p>
+                <p class="small" style="text-align: center; color: var(--text-tertiary);">December 2025</p>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">1 / 15</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: The Problem -->
+        <div class="slide" data-slide="2">
+            <div class="slide-header">
+                <h1>The L&D Crisis</h1>
+                <p class="subtitle">Five chronic challenges facing learning & development</p>
+            </div>
+            <div class="slide-content">
+                <div class="problem-grid">
+                    <div class="problem-card">
+                        <h3>Speed</h3>
+                        <p>3-6 months from problem identification to deployed training. Learners struggle while L&D builds courses.</p>
+                    </div>
+                    <div class="problem-card">
+                        <h3>ROI Invisibility</h3>
+                        <p>Can't prove business impact with rigorous data. L&D remains a cost center justifying its existence.</p>
+                    </div>
+                    <div class="problem-card">
+                        <h3>Knowledge Loss</h3>
+                        <p>Tribal expertise trapped in Slack threads, wikis, and expert minds disappears when people leave.</p>
+                    </div>
+                    <div class="problem-card">
+                        <h3>One-Size-Fits-All</h3>
+                        <p>Generic training ignores individual learner needs, contexts, and performance gaps.</p>
+                    </div>
+                </div>
+                <div class="problem-card" style="max-width: 800px; margin: 0 auto;">
+                    <h3>Adoption Friction</h3>
+                    <p>Context switching to LMS platforms reduces engagement. Industry average: 20-30% completion rate.</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">2 / 15</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: Market Opportunity -->
+        <div class="slide" data-slide="3">
+            <div class="slide-header">
+                <h1>A $400B Problem</h1>
+                <p class="subtitle">Global corporate training market, 2025</p>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div>
+                        <svg class="donut-chart" viewBox="0 0 200 200" style="max-width: 400px;">
+                            <!-- Donut chart segments -->
+                            <circle cx="100" cy="100" r="70" fill="none" stroke="var(--grey-7)" stroke-width="30" stroke-dasharray="132 439" transform="rotate(-90 100 100)"/>
+                            <circle cx="100" cy="100" r="70" fill="none" stroke="var(--grey-5)" stroke-width="30" stroke-dasharray="103 439" stroke-dashoffset="-132" transform="rotate(-90 100 100)"/>
+                            <circle cx="100" cy="100" r="70" fill="none" stroke="var(--grey-2)" stroke-width="30" stroke-dasharray="204 439" stroke-dashoffset="-235" transform="rotate(-90 100 100)"/>
+                            <!-- Center label -->
+                            <text x="100" y="95" text-anchor="middle" font-family="var(--font-heading)" font-size="32" font-weight="700" fill="var(--text-primary)">$400B</text>
+                            <text x="100" y="115" text-anchor="middle" font-family="var(--font-body)" font-size="12" fill="var(--text-tertiary)">TAM</text>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 32px;">Market Segments</h3>
+                        <div style="margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                <div style="width: 16px; height: 16px; background: var(--grey-2); border-radius: 2px;"></div>
+                                <span style="color: var(--text-primary); font-weight: 600;">Total Market: $400B</span>
+                            </div>
+                            <p class="small" style="margin-left: 28px;">Global corporate training market</p>
+                        </div>
+                        <div style="margin-bottom: 24px;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                <div style="width: 16px; height: 16px; background: var(--grey-5); border-radius: 2px;"></div>
+                                <span style="color: var(--text-primary); font-weight: 600;">SAM: $120B</span>
+                            </div>
+                            <p class="small" style="margin-left: 28px;">Enterprise organizations (1000+ employees)</p>
+                        </div>
+                        <div style="margin-bottom: 32px;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                <div style="width: 16px; height: 16px; background: var(--grey-7); border-radius: 2px;"></div>
+                                <span style="color: var(--text-primary); font-weight: 600;">Target: $40B</span>
+                            </div>
+                            <p class="small" style="margin-left: 28px;">L&D teams needing AI-first solutions</p>
+                        </div>
+
+                        <h3 style="margin-bottom: 16px; margin-top: 32px;">Market Drivers</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                78% of Fortune 500 exploring AI solutions
+                            </li>
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                Skills half-life: 10-15 years → 3-5 years
+                            </li>
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                Remote/hybrid demands new delivery
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">3 / 15</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: Our Solution -->
+        <div class="slide" data-slide="4">
+            <div class="slide-header">
+                <h1>The 3-Loop Model</h1>
+                <p class="subtitle">AI-first instructional design that's 10x faster</p>
+            </div>
+            <div class="slide-content">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+                    <div class="card">
+                        <div class="label" style="margin-bottom: 16px;">LOOP 1</div>
+                        <h3 style="font-family: var(--font-heading); font-size: 24px; margin-bottom: 16px;">Intelligence</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 15px;">AI interviews stakeholders, analyzes data, uncovers root causes</p>
+                        <div style="padding-top: 16px; border-top: 1px solid var(--border);">
+                            <p style="font-family: var(--font-heading); color: var(--text-primary); font-weight: 600;">Weeks → Days</p>
+                            <p class="small">Replaces Analysis phase</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="label" style="margin-bottom: 16px;">LOOP 2</div>
+                        <h3 style="font-family: var(--font-heading); font-size: 24px; margin-bottom: 16px;">Generation</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 15px;">AI generates adaptive, personalized learning experiences</p>
+                        <div style="padding-top: 16px; border-top: 1px solid var(--border);">
+                            <p style="font-family: var(--font-heading); color: var(--text-primary); font-weight: 600;">Months → Minutes</p>
+                            <p class="small">Merges Design + Development</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="label" style="margin-bottom: 16px;">LOOP 3</div>
+                        <h3 style="font-family: var(--font-heading); font-size: 24px; margin-bottom: 16px;">Evolution</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 15px;">Continuous learning with real-time adaptation</p>
+                        <div style="padding-top: 16px; border-top: 1px solid var(--border);">
+                            <p style="font-family: var(--font-heading); color: var(--text-primary); font-weight: 600;">Static → Dynamic</p>
+                            <p class="small">Replaces Implement + Evaluate</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="callout" style="margin-top: 48px;">
+                    <p style="font-size: 16px; color: var(--text-secondary);">80% AI automation, 20% human oversight</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">4 / 15</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: Key Differentiators -->
+        <div class="slide" data-slide="5">
+            <div class="slide-header">
+                <h1>What Makes Us Different</h1>
+                <p class="subtitle">Three critical MVP innovations</p>
+            </div>
+            <div class="slide-content">
+                <div class="card-grid card-grid-3">
+                    <div class="card">
+                        <div class="label" style="margin-bottom: 16px;">INNOVATION 1</div>
+                        <h3 style="font-family: var(--font-heading); font-size: 20px; margin-bottom: 16px; color: var(--text-primary);">Workflow Integration</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                Learning delivered in Slack/Teams
+                            </li>
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                Zero friction, mobile-responsive
+                            </li>
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                Audio content for commutes
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <div class="label" style="margin-bottom: 16px;">INNOVATION 2</div>
+                        <h3 style="font-family: var(--font-heading); font-size: 20px; margin-bottom: 16px; color: var(--text-primary);">Content Ingestion</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                AI learns from wikis, Slack, docs
+                            </li>
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                60-80% faster content creation
+                            </li>
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                Capture tribal knowledge
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <div class="label" style="margin-bottom: 16px;">INNOVATION 3</div>
+                        <h3 style="font-family: var(--font-heading); font-size: 20px; margin-bottom: 16px; color: var(--text-primary);">ROI Attribution</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                Control groups, statistical rigor
+                            </li>
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                Board-ready reports
+                            </li>
+                            <li style="margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 14px;">
+                                <span style="position: absolute; left: 0;">→</span>
+                                Prove causation, not correlation
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">5 / 15</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: How It Works -->
+        <div class="slide" data-slide="6">
+            <div class="slide-header">
+                <h1>The Platform Journey</h1>
+                <p class="subtitle">From problem to solution in under 48 hours</p>
+            </div>
+            <div class="slide-content">
+                <div class="process-flow">
+                    <div class="process-step">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Stakeholder</div>
+                        <div class="step-detail">Identifies problem, AI interviews via Slack</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Analysis</div>
+                        <div class="step-detail">AI analyzes data + existing content</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Collaboration</div>
+                        <div class="step-detail">AI consults L&D + SME experts</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">4</div>
+                        <div class="step-title">Generation</div>
+                        <div class="step-detail">AI creates adaptive learning</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">5</div>
+                        <div class="step-title">Deployment</div>
+                        <div class="step-detail">Delivered in workflow with control group</div>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">6</div>
+                        <div class="step-title">Evolution</div>
+                        <div class="step-detail">Continuous improvement, real-time adaptation</div>
+                    </div>
+                </div>
+                <div class="callout" style="margin-top: 64px;">
+                    <p style="font-size: 18px; color: var(--text-primary); font-weight: 600; font-family: var(--font-heading);">&lt;48 hours</p>
+                    <p class="small">Problem identification → First learner engagement</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">6 / 15</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: User Journey - Business Stakeholder -->
+        <div class="slide" data-slide="7">
+            <div class="slide-header">
+                <h1>Maria's Story: VP of Sales</h1>
+                <p class="subtitle">From problem to solution in 1 week</p>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div class="column">
+                        <h3 style="color: var(--text-tertiary);">BEFORE: Traditional Process</h3>
+                        <ul>
+                            <li>Email L&D, schedule meetings (1 week wait)</li>
+                            <li>Needs analysis interviews (2-3 weeks)</li>
+                            <li>Design documents created (2 weeks)</li>
+                            <li>Course development (6-8 weeks)</li>
+                            <li>Testing and revisions (2 weeks)</li>
+                        </ul>
+                        <div class="result" style="color: var(--text-tertiary);">
+                            <strong>Timeline:</strong> 12+ weeks<br>
+                            <strong>Result:</strong> Too slow, learners already struggling
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h3 style="color: var(--text-primary);">AFTER: Our Platform</h3>
+                        <ul>
+                            <li>Monday: 15-min AI interview via Slack</li>
+                            <li>Tuesday: AI analyzes data, identifies root cause</li>
+                            <li>Wednesday: AI consults L&D + SME</li>
+                            <li>Thursday: AI generates learning prototype</li>
+                            <li>Friday: Human review and approval</li>
+                            <li>Next Monday: Learners begin training</li>
+                        </ul>
+                        <div class="result">
+                            <strong>Timeline:</strong> 1 week<br>
+                            <strong>Result:</strong> Fast, data-driven, proven ROI
+                        </div>
+                    </div>
+                </div>
+                <div class="callout" style="margin-top: 48px;">
+                    <p style="font-size: 16px; color: var(--text-primary); font-weight: 600; font-family: var(--font-heading);">10x faster than traditional process</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">7 / 15</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: User Journey - Learner -->
+        <div class="slide" data-slide="8">
+            <div class="slide-header">
+                <h1>Jake's Story: Junior Sales Rep</h1>
+                <p class="subtitle">From generic training to personalized coaching</p>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div class="column">
+                        <h3 style="color: var(--text-tertiary);">BEFORE: Traditional LMS</h3>
+                        <ul>
+                            <li>Logs into rarely-used LMS</li>
+                            <li>Generic "Discovery Calls 101" course</li>
+                            <li>1 hour of slides + quiz</li>
+                            <li>Multitasking, disengaged</li>
+                            <li>Passes quiz, forgets by Monday</li>
+                        </ul>
+                        <div class="result" style="color: var(--text-tertiary);">
+                            <strong>Completion:</strong> 25% rate<br>
+                            <strong>Result:</strong> No behavior change, still struggling (21% conversion)
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h3 style="color: var(--text-primary);">AFTER: Our Platform</h3>
+                        <ul>
+                            <li>Commute: 10-min audio via Slack/car bluetooth</li>
+                            <li>Desk: 15-min interactive AI simulation</li>
+                            <li>Immediate, actionable feedback</li>
+                            <li>3 weeks: 5 simulations + 8 audio tips</li>
+                            <li>Spaced repetition, adaptive difficulty</li>
+                        </ul>
+                        <div class="result">
+                            <strong>Completion:</strong> 95% rate<br>
+                            <strong>Result:</strong> Conversion improves 21% → 45% (+24 points)
+                        </div>
+                    </div>
+                </div>
+                <div class="callout" style="margin-top: 48px;">
+                    <p style="font-size: 16px; color: var(--text-primary); font-weight: 600; font-family: var(--font-heading);">80%+ completion vs. 20-30% industry average</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">8 / 15</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: Success Metrics -->
+        <div class="slide" data-slide="9">
+            <div class="slide-header">
+                <h1>Measurable Impact</h1>
+                <p class="subtitle">All metrics measured with statistical rigor</p>
+            </div>
+            <div class="slide-content">
+                <div class="card-grid card-grid-2">
+                    <div class="stat-card">
+                        <span class="stat-large">10x</span>
+                        <span class="label">Speed</span>
+                        <span class="small">Faster than traditional ID<br>Weeks → Days</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-large">2x</span>
+                        <span class="label">Learning Outcomes</span>
+                        <span class="small">Performance improvement<br>Trained vs. control group</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-large">50%</span>
+                        <span class="label">Cost Efficiency</span>
+                        <span class="small">Reduction in L&D costs<br>Faster creation, content reuse</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-large">20:1</span>
+                        <span class="label">ROI</span>
+                        <span class="small">Return on investment<br>Conservative target</span>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">9 / 15</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: ROI Example -->
+        <div class="slide" data-slide="10">
+            <div class="slide-header">
+                <h1>Case Study: Discovery Call Training</h1>
+                <p class="subtitle">6-month results with control group</p>
+            </div>
+            <div class="slide-content">
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-bottom: 32px;">
+                    <div class="card">
+                        <div class="label" style="margin-bottom: 16px;">INVESTMENT</div>
+                        <div style="margin-bottom: 12px;">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Platform cost:</span>
+                            <span style="color: var(--text-primary); font-weight: 600; float: right;">$15,000</span>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Employee time:</span>
+                            <span style="color: var(--text-primary); font-weight: 600; float: right;">$12,500</span>
+                        </div>
+                        <div style="padding-top: 12px; border-top: 1px solid var(--border);">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Total:</span>
+                            <span style="color: var(--text-primary); font-weight: 700; font-size: 20px; font-family: var(--font-heading); float: right;">$27,500</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="label" style="margin-bottom: 16px;">RETURN</div>
+                        <div style="margin-bottom: 12px;">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Trained group:</span>
+                            <span style="color: var(--text-primary); font-weight: 600; float: right;">23% → 45%</span>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Control group:</span>
+                            <span style="color: var(--text-tertiary); font-weight: 600; float: right;">23% → 24%</span>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Incremental deals:</span>
+                            <span style="color: var(--text-primary); font-weight: 600; float: right;">87 deals</span>
+                        </div>
+                        <div style="padding-top: 12px; border-top: 1px solid var(--border);">
+                            <span style="color: var(--text-secondary); font-size: 14px;">Revenue:</span>
+                            <span style="color: var(--text-primary); font-weight: 700; font-size: 20px; font-family: var(--font-heading); float: right;">$1.2M</span>
+                        </div>
+                    </div>
+                    <div class="card" style="background: var(--bg-base); border: 2px solid var(--text-primary);">
+                        <div class="label" style="margin-bottom: 16px; color: var(--text-primary);">ROI</div>
+                        <div style="text-align: center; padding: 20px 0;">
+                            <div style="font-family: var(--font-heading); font-size: 56px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">42.7:1</div>
+                            <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">Every $1 invested<br>generated $42.70 in revenue</div>
+                            <div class="small">95% confidence (p &lt; 0.001)</div>
+                        </div>
+                    </div>
+                </div>
+                <svg width="100%" height="100" viewBox="0 0 800 100" style="max-width: 900px; margin: 0 auto;">
+                    <text x="100" y="20" font-family="var(--font-body)" font-size="12" fill="var(--text-tertiary)">Conversion Rate</text>
+
+                    <!-- Trained group bar -->
+                    <rect x="100" y="35" width="45" height="20" fill="var(--grey-7)" rx="2"/>
+                    <text x="95" y="50" text-anchor="end" font-family="var(--font-body)" font-size="11" fill="var(--text-secondary)">Before</text>
+                    <text x="150" y="50" font-family="var(--font-heading)" font-size="11" font-weight="600" fill="var(--text-primary)">23%</text>
+
+                    <rect x="100" y="60" width="450" height="20" fill="var(--grey-2)" rx="2"/>
+                    <text x="95" y="75" text-anchor="end" font-family="var(--font-body)" font-size="11" fill="var(--text-secondary)">After</text>
+                    <text x="555" y="75" font-family="var(--font-heading)" font-size="11" font-weight="600" fill="var(--text-primary)">45%</text>
+
+                    <text x="325" y="95" text-anchor="middle" font-family="var(--font-body)" font-size="10" fill="var(--text-tertiary)">Trained Group: +22 points</text>
+
+                    <!-- Control group (minimal) -->
+                    <rect x="600" y="35" width="45" height="20" fill="var(--grey-7)" rx="2"/>
+                    <rect x="600" y="60" width="50" height="20" fill="var(--grey-5)" rx="2"/>
+                    <text x="660" y="75" font-family="var(--font-heading)" font-size="11" font-weight="600" fill="var(--text-tertiary)">24%</text>
+                    <text x="675" y="95" text-anchor="middle" font-family="var(--font-body)" font-size="10" fill="var(--text-tertiary)">Control: +1 point</text>
+                </svg>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">10 / 15</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: Competitive Landscape -->
+        <div class="slide" data-slide="11">
+            <div class="slide-header">
+                <h1>Why Existing Solutions Fail</h1>
+                <p class="subtitle">We're AI-native, not retrofitted</p>
+            </div>
+            <div class="slide-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Capability</th>
+                            <th>Traditional LMS</th>
+                            <th>Authoring Tools</th>
+                            <th style="color: var(--text-primary);">Our Platform</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>AI-driven analysis</td>
+                            <td style="text-align: center;">—</td>
+                            <td style="text-align: center;">—</td>
+                            <td style="text-align: center; color: var(--text-primary); font-weight: 600;">✓</td>
+                        </tr>
+                        <tr>
+                            <td>Workflow integration</td>
+                            <td style="text-align: center;">—</td>
+                            <td style="text-align: center;">—</td>
+                            <td style="text-align: center; color: var(--text-primary); font-weight: 600;">✓ Slack/Teams</td>
+                        </tr>
+                        <tr>
+                            <td>Adaptive generation</td>
+                            <td style="text-align: center;">—</td>
+                            <td style="text-align: center;">—</td>
+                            <td style="text-align: center; color: var(--text-primary); font-weight: 600;">✓</td>
+                        </tr>
+                        <tr>
+                            <td>Content ingestion</td>
+                            <td style="text-align: center;">—</td>
+                            <td style="text-align: center;">—</td>
+                            <td style="text-align: center; color: var(--text-primary); font-weight: 600;">✓ Wikis, Slack</td>
+                        </tr>
+                        <tr>
+                            <td>ROI attribution</td>
+                            <td style="text-align: center;">—</td>
+                            <td style="text-align: center;">—</td>
+                            <td style="text-align: center; color: var(--text-primary); font-weight: 600;">✓ Statistical</td>
+                        </tr>
+                        <tr>
+                            <td>Speed to learner</td>
+                            <td style="text-align: center;">Weeks-Months</td>
+                            <td style="text-align: center;">Weeks-Months</td>
+                            <td style="text-align: center; color: var(--text-primary); font-weight: 600;">Days</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="callout" style="margin-top: 48px;">
+                    <p style="font-size: 16px; color: var(--text-secondary);">Existing tools are pre-AI. We're AI-native from day one.</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">11 / 15</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: MVP Roadmap -->
+        <div class="slide" data-slide="12">
+            <div class="slide-header">
+                <h1>Execution Plan</h1>
+                <p class="subtitle">Clear milestones and targets</p>
+            </div>
+            <div class="slide-content">
+                <div class="timeline">
+                    <div class="timeline-phase">
+                        <h3>MVP (Months 1-6)</h3>
+                        <ul>
+                            <li>Core 3-Loop Model</li>
+                            <li>Workflow Integration</li>
+                            <li>Content Ingestion</li>
+                            <li>ROI Attribution Engine</li>
+                            <li>Slack, Teams, Salesforce</li>
+                            <li>SOC 2 Type II</li>
+                        </ul>
+                        <div class="target">Target: 3 pilot customers</div>
+                    </div>
+                    <div class="timeline-phase">
+                        <h3>Year 1 (Months 7-12)</h3>
+                        <ul>
+                            <li>Voice-first learning</li>
+                            <li>Adaptive assessments</li>
+                            <li>Zendesk, Workday integrations</li>
+                            <li>Customer success team</li>
+                            <li>Case studies & thought leadership</li>
+                        </ul>
+                        <div class="target">Target: 25-40 customers</div>
+                    </div>
+                    <div class="timeline-phase">
+                        <h3>Year 2-3 (Scale)</h3>
+                        <ul>
+                            <li>Peer learning networks</li>
+                            <li>VR/AR integration</li>
+                            <li>Community platform</li>
+                            <li>White-label offering</li>
+                            <li>International expansion</li>
+                        </ul>
+                        <div class="target">Target: 200+ customers</div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">12 / 15</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 13: Technology Stack -->
+        <div class="slide" data-slide="13">
+            <div class="slide-header">
+                <h1>Built for Enterprise Scale</h1>
+                <p class="subtitle">Modern, secure, AI-native architecture</p>
+            </div>
+            <div class="slide-content">
+                <div class="arch-stack">
+                    <div class="arch-layer">
+                        <span class="layer-name">AI Layer</span>
+                        <span class="layer-detail">GPT-4/Claude, 200K+ context, multimodal</span>
+                    </div>
+                    <div class="arch-layer">
+                        <span class="layer-name">Platform Layer</span>
+                        <span class="layer-detail">Microservices, hybrid SaaS + on-prem</span>
+                    </div>
+                    <div class="arch-layer">
+                        <span class="layer-name">Integration Layer</span>
+                        <span class="layer-detail">Slack, Teams, Salesforce, Confluence</span>
+                    </div>
+                    <div class="arch-layer">
+                        <span class="layer-name">Data Layer</span>
+                        <span class="layer-detail">Vector DB, knowledge graph, analytics warehouse</span>
+                    </div>
+                    <div class="arch-layer">
+                        <span class="layer-name">Security Layer</span>
+                        <span class="layer-detail">SOC 2, GDPR, AES-256, TLS 1.3, RBAC</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <div class="label" style="margin-bottom: 16px;">KEY TECHNOLOGIES</div>
+                    <div class="tech-badges">
+                        <span class="tech-badge">OpenAI · Anthropic</span>
+                        <span class="tech-badge">AWS · Azure</span>
+                        <span class="tech-badge">PostgreSQL · Neo4j · Pinecone</span>
+                        <span class="tech-badge">Slack SDK · Teams Bot</span>
+                        <span class="tech-badge">Salesforce API</span>
+                        <span class="tech-badge">Tableau · PowerBI</span>
+                        <span class="tech-badge">SOC 2 · GDPR · CCPA</span>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">13 / 15</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 14: Investment Ask -->
+        <div class="slide" data-slide="14">
+            <div class="slide-header">
+                <h1>Investment: $1.4M - $2.1M Year 1</h1>
+                <p class="subtitle">Clear deployment plan and milestones</p>
+            </div>
+            <div class="slide-content">
+                <div class="card-grid card-grid-3">
+                    <div class="card">
+                        <div class="label" style="margin-bottom: 16px;">MVP DEVELOPMENT</div>
+                        <h3 style="font-family: var(--font-heading); font-size: 28px; margin-bottom: 20px; color: var(--text-primary);">$800K-$1.2M</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">→ 6 engineers (full-stack, AI/ML, DevOps)</li>
+                            <li style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">→ 2 product/design (PM, UX)</li>
+                            <li style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">→ Cloud, AI API costs</li>
+                            <li style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">→ SOC 2 certification</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <div class="label" style="margin-bottom: 16px;">YEAR 1 EXPANSION</div>
+                        <h3 style="font-family: var(--font-heading); font-size: 28px; margin-bottom: 20px; color: var(--text-primary);">$600K-$900K</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">→ +5 team (eng, CS, sales)</li>
+                            <li style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">→ Advanced features</li>
+                            <li style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">→ Go-to-market execution</li>
+                            <li style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">→ Partnerships & marketing</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <div class="label" style="margin-bottom: 16px;">KEY MILESTONES</div>
+                        <h3 style="font-family: var(--font-heading); font-size: 28px; margin-bottom: 20px; color: var(--text-primary);">Timeline</h3>
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">→ Month 6: MVP + 3 pilots</li>
+                            <li style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">→ Month 12: 25-40 customers</li>
+                            <li style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">→ Month 18: Product-market fit</li>
+                            <li style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">→ Month 24: $3M-$5M revenue</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="callout" style="margin-top: 48px;">
+                    <p style="font-size: 16px; color: var(--text-primary); font-weight: 600; font-family: var(--font-heading);">Year 2 projected revenue: $3M-$5M</p>
+                    <p class="small">50-75 enterprise customers at $50K-75K ACV</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">14 / 15</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 15: Vision -->
+        <div class="slide" data-slide="15">
+            <div class="slide-header">
+                <h1>Transform L&D</h1>
+                <p class="subtitle">From cost center to strategic advantage</p>
+            </div>
+            <div class="slide-content">
+                <div class="quote-block">
+                    <blockquote>
+                        "In 3 years, every L&D initiative will have clear ROI.<br>
+                        Learners will receive personalized, just-in-time support in their flow of work.<br>
+                        L&D will be a profit driver with board-level visibility."
+                    </blockquote>
+                </div>
+                <div class="cta">
+                    <p style="font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 24px;">Let's build the future of learning together</p>
+                    <p class="small">Contact: hello@platform.ai</p>
+                    <p class="small">Demo: platform.ai/demo</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span class="pagination">15 / 15</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevBtn" onclick="prevSlide()">← Previous</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Next →</button>
+        <div class="slide-counter" id="slideCounter">1 / 15</div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 15;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+
+            if (n > totalSlides) currentSlide = totalSlides;
+            if (n < 1) currentSlide = 1;
+
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            slides[currentSlide - 1].classList.add('active');
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = (currentSlide === 1);
+            document.getElementById('nextBtn').disabled = (currentSlide === totalSlides);
+
+            // Update slide counter
+            document.getElementById('slideCounter').textContent = currentSlide + ' / ' + totalSlides;
+
+            // Update URL hash
+            window.location.hash = currentSlide;
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                if (currentSlide < totalSlides) nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (currentSlide > 1) prevSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                currentSlide = 1;
+                showSlide(currentSlide);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                currentSlide = totalSlides;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                // Swipe left = next slide
+                if (currentSlide < totalSlides) nextSlide();
+            }
+            if (touchEndX > touchStartX + 50) {
+                // Swipe right = prev slide
+                if (currentSlide > 1) prevSlide();
+            }
+        }
+
+        // URL hash routing
+        window.addEventListener('load', function() {
+            const hash = parseInt(window.location.hash.replace('#', ''));
+            if (hash >= 1 && hash <= totalSlides) {
+                currentSlide = hash;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Auto-hide cursor in presentation mode (after 3 seconds of inactivity)
+        let cursorTimeout;
+        document.addEventListener('mousemove', function() {
+            document.body.style.cursor = 'default';
+            clearTimeout(cursorTimeout);
+            cursorTimeout = setTimeout(function() {
+                document.body.style.cursor = 'none';
+            }, 3000);
+        });
+
+        // Initialize
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
