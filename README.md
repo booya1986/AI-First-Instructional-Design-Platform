@@ -8,7 +8,9 @@ This repository contains an interactive HTML presentation deck that introduces a
 
 ## 🚀 View the Presentation
 
-**[Open Interactive Deck](investor_deck.html)**
+**[Open Interactive Deck](https://booya1986.github.io/AI-First-Instructional-Design-Platform/investor_deck.html)** ← Share this link!
+
+> Note: If the link above doesn't work yet, you need to enable GitHub Pages in repository Settings → Pages → Deploy from branch: main
 
 ## 💡 What's Inside
 
