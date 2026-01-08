@@ -16,6 +16,8 @@ Focus: Market opportunity, ROI, technology, and investment ask
 ### 👥 User Story Deck
 **[Open User Story Deck](https://booya1986.github.io/AI-First-Instructional-Design-Platform/user_story_deck.html)** ← Real user journeys
 
+**[Open User Story Deck (Hebrew RTL)](https://booya1986.github.io/AI-First-Instructional-Design-Platform/user_story_deck_he.html)** ← גרסה עברית
+
 Focus: Character-driven narrative showing the platform through users' eyes
 
 > **Note**: If the links above don't work yet, you need to enable GitHub Pages in repository Settings → Pages → Deploy from branch: main
@@ -35,6 +37,7 @@ Focus: Character-driven narrative showing the platform through users' eyes
 
 ### User Story Deck (21 slides)
 - **Meet the Characters**: Maria (VP Sales), David (L&D), Sarah (SME), Jake (Learner)
+  - **Hebrew Version**: רוני, דוד, שרה, ירון with RTL layout and Noto Sans Hebrew font
 - **Act 1 - The Problem**: Sales team missing quota, traditional L&D too slow
 - **Act 2 - Intelligence Loop**: Maria's 1-week journey from problem to solution
 - **Act 3 - Generation Loop**: Sarah provides expertise in just 50 minutes
