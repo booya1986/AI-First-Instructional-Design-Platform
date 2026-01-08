@@ -1093,28 +1093,15 @@
                 top: 0;
             }
 
-            /* Slide 16: Make SVG chart responsive */
-            svg {
-                height: auto !important;
-            }
-
-            [data-slide="16"] svg {
+            /* Slide 16: Make stat card full width on mobile */
+            [data-slide="16"] .stat-card {
                 margin-bottom: 24px !important;
+                padding: 24px !important;
             }
 
-            /* Slide 16: Scale down chart to fit mobile screen */
             [data-slide="16"] .slide-content > div {
                 max-width: 100% !important;
-                padding: 0 8px;
-            }
-
-            [data-slide="16"] svg {
-                overflow: visible;
-            }
-
-            /* Make SVG text smaller on mobile */
-            [data-slide="16"] svg text {
-                font-size: 11px !important;
+                padding: 0 !important;
             }
 
             /* Slide 19: ROI cards need better spacing on mobile */
@@ -1150,6 +1137,12 @@
 
             [data-slide="21"] [style*="font-size: 24px"] {
                 font-size: 18px !important;
+            }
+
+            /* Slide 21: Make avatar grid 2x2 on mobile instead of 1 column */
+            [data-slide="21"] [style*="grid-template-columns: repeat(4"] {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 20px !important;
             }
 
             /* Reduce margins on mobile */
@@ -1929,21 +1922,36 @@
             </div>
             <div class="slide-content">
                 <div style="max-width: 900px; margin: 0 auto;">
-                    <svg width="100%" height="180" viewBox="0 0 900 180" style="margin-bottom: 32px;">
-                        <text x="900" y="20" text-anchor="end" font-family="var(--font-body)" font-size="14" fill="var(--text-tertiary)">שיעור המרה</text>
+                    <!-- Simple bar chart like slide 2 -->
+                    <div class="stat-card" style="padding: 32px; margin-bottom: 32px;">
+                        <span class="label" style="margin-bottom: 24px; display: block;">שיעור המרה</span>
 
-                        <!-- Before bar (21%) - RTL aligned from right -->
-                        <rect x="590" y="50" width="210" height="40" fill="var(--text-tertiary)" opacity="0.3" rx="4"/>
-                        <text x="850" y="75" text-anchor="end" font-family="var(--font-body)" font-size="13" fill="var(--text-secondary)">לפני</text>
-                        <text x="560" y="75" text-anchor="end" font-family="var(--font-heading)" font-size="16" font-weight="600" fill="var(--text-primary)">21%</text>
+                        <!-- Before Bar -->
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span style="font-size: 13px; color: var(--text-secondary);">לפני</span>
+                                <span style="font-family: var(--font-heading); font-size: 16px; font-weight: 600; color: var(--text-primary);">21%</span>
+                            </div>
+                            <div style="width: 100%; height: 32px; background: var(--bg-base); border-radius: 4px; overflow: hidden;">
+                                <div style="width: 21%; height: 100%; background: var(--text-tertiary); opacity: 0.5; border-radius: 4px;"></div>
+                            </div>
+                        </div>
 
-                        <!-- After bar (45%) - RTL aligned from right -->
-                        <rect x="350" y="110" width="450" height="40" fill="#FFFFFF" rx="4"/>
-                        <text x="850" y="135" text-anchor="end" font-family="var(--font-body)" font-size="13" fill="var(--text-secondary)">אחרי</text>
-                        <text x="310" y="135" text-anchor="end" font-family="var(--font-heading)" font-size="16" font-weight="600" fill="var(--text-primary)">45%</text>
+                        <!-- After Bar -->
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span style="font-size: 13px; color: var(--text-secondary);">אחרי</span>
+                                <span style="font-family: var(--font-heading); font-size: 16px; font-weight: 600; color: var(--text-primary);">45%</span>
+                            </div>
+                            <div style="width: 100%; height: 32px; background: var(--bg-base); border-radius: 4px; overflow: hidden;">
+                                <div style="width: 45%; height: 100%; background: #FFFFFF; border-radius: 4px;"></div>
+                            </div>
+                        </div>
 
-                        <text x="450" y="170" text-anchor="middle" font-family="var(--font-body)" font-size="13" fill="var(--text-tertiary)">שיפור של +24 נקודות אחוז</text>
-                    </svg>
+                        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); text-align: center;">
+                            <span style="font-size: 13px; color: var(--text-tertiary);">שיפור של +24 נקודות אחוז</span>
+                        </div>
+                    </div>
 
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
                         <div class="stat-card">
