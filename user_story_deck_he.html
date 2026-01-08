@@ -824,6 +824,13 @@
                 gap: 24px;
             }
 
+            /* Multi-column grids reduce to 2 columns on tablet */
+            [style*="grid-template-columns: repeat(3"],
+            [style*="grid-template-columns: repeat(4"] {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 20px !important;
+            }
+
             .card {
                 padding: 28px;
                 max-width: 100%;
@@ -1029,14 +1036,23 @@
 
             /* Two column becomes single */
             .two-column {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr !important;
                 gap: 24px;
             }
 
             /* Process flow stacks */
             .process-flow {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr !important;
                 gap: 16px;
+            }
+
+            /* All multi-column grids become single column on mobile */
+            [style*="grid-template-columns: repeat(2"],
+            [style*="grid-template-columns: repeat(3"],
+            [style*="grid-template-columns: repeat(4"],
+            [style*="grid-template-columns: 1fr 1fr"] {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
             }
 
             /* Reduce margins on mobile */
