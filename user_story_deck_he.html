@@ -2258,26 +2258,38 @@
             }
         });
 
-        // Touch/swipe support
+        // Touch/swipe support (horizontal only)
         let touchStartX = 0;
         let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
 
         document.addEventListener('touchstart', function(e) {
             touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
         }, false);
 
         document.addEventListener('touchend', function(e) {
             touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
             handleSwipe();
         }, false);
 
         function handleSwipe() {
-            if (touchEndX < touchStartX - 50) {
-                if (currentSlide < totalSlides) nextSlide();
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+
+            // Only trigger slide change if horizontal swipe is greater than vertical
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+                if (deltaX < 0) {
+                    // Swipe left -> next slide
+                    if (currentSlide < totalSlides) nextSlide();
+                } else {
+                    // Swipe right -> previous slide
+                    if (currentSlide > 1) prevSlide();
+                }
             }
-            if (touchEndX > touchStartX + 50) {
-                if (currentSlide > 1) prevSlide();
-            }
+            // If vertical swipe is greater, do nothing (allow natural scrolling)
         }
 
         // URL hash routing
