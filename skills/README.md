@@ -28,6 +28,7 @@ Skills are organized folders of instructions, scripts, and resources that Claude
 - Claude Code Dark design system expertise
 - Single-file HTML architecture
 - Bilingual (English/Hebrew) support with RTL
+- Mobile-first responsive design patterns
 - Performance optimization guidance
 - Accessibility best practices
 - Component pattern library
@@ -189,6 +190,16 @@ Claude: [Loads frontend-engineer skill]
         [Follows RTL guidelines from Phase 2]
         [Applies RTL CSS patterns]
         [Updates navigation for Hebrew text]
+```
+
+**Scenario 3: Mobile Responsiveness**
+```
+User: "Make the slideshow mobile responsive"
+Claude: [Loads frontend-engineer skill]
+        [Applies mobile-first patterns from css-patterns.md]
+        [Implements touch gestures from javascript-patterns.md]
+        [Ensures grids stack on mobile]
+        [Optimizes charts for small screens]
 ```
 
 ## Resources

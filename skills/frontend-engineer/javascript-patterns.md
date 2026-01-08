@@ -146,7 +146,7 @@ function attachEventListeners() {
 }
 ```
 
-### Touch/Swipe Navigation
+### Touch/Swipe Navigation (Basic)
 ```javascript
 let touchStartX = 0;
 let touchEndX = 0;
@@ -181,6 +181,48 @@ function handleSwipe() {
     }
 }
 ```
+
+### Smart Touch Navigation (Horizontal Only)
+For slides with vertical scrolling, only trigger slide changes on horizontal swipes:
+
+```javascript
+let touchStartX = 0;
+let touchEndX = 0;
+let touchStartY = 0;
+let touchEndY = 0;
+
+function attachSmartTouchListeners() {
+    document.addEventListener('touchstart', function(e) {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    }, false);
+
+    document.addEventListener('touchend', function(e) {
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        handleSmartSwipe();
+    }, false);
+}
+
+function handleSmartSwipe() {
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+
+    // Only trigger slide change if horizontal swipe is greater than vertical
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+        if (deltaX < 0) {
+            // Swipe left -> next slide
+            if (currentSlide < totalSlides) nextSlide();
+        } else {
+            // Swipe right -> previous slide
+            if (currentSlide > 1) prevSlide();
+        }
+    }
+    // If vertical swipe is greater, do nothing (allow natural scrolling)
+}
+```
+
+**Use Case**: This pattern prevents accidental slide changes when users scroll vertically through long content. Only intentional horizontal swipes change slides.
 
 ## Deep Linking Pattern
 
