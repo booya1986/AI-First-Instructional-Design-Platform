@@ -48,11 +48,25 @@ Focus: Character-driven narrative showing the platform through users' eyes
 
 ## 🎨 Features
 
+### Core Features
 - **Interactive Navigation**: Keyboard shortcuts (arrow keys, space, Home, End)
-- **Touch Support**: Swipe gestures for mobile devices
-- **Responsive Design**: Scales beautifully across devices
-- **Modern Aesthetics**: Clean, minimalist design with smooth animations
-- **Professional Typography**: JetBrains Mono + Inter font pairing
+- **Smart Touch Support**: Horizontal swipe navigation (vertical swipes scroll content)
+- **Fully Responsive**: Optimized for desktop (1440×900), tablet, and mobile devices
+- **Modern Aesthetics**: Clean, minimalist dark design (#0B0B0B) with smooth animations
+- **Professional Typography**: JetBrains Mono + Inter (English), Noto Sans Hebrew (RTL)
+
+### Mobile-First Design
+- **Adaptive Layouts**: Multi-column grids automatically stack on mobile
+- **Touch-Optimized**: 44×44px minimum tap targets, smooth scrolling
+- **Responsive Charts**: Simple horizontal bars for mobile, detailed visualizations on desktop
+- **Vertical Scrolling**: Long slides scroll naturally without changing slides
+- **2x2 Grids**: Avatar and card grids optimized for mobile viewports
+
+### RTL (Hebrew) Support
+- **Full Right-to-Left Layout**: Mirrored navigation, text alignment, and UI elements
+- **Hebrew Typography**: Noto Sans Hebrew with optimized line-height (1.7)
+- **Character Translation**: רוני (Roni), דוד (Dod), שרה (Sara), ירון (Yaron)
+- **Bidirectional Content**: Numbers remain LTR within RTL text flow
 
 ## 📱 How to Use
 
@@ -67,11 +81,23 @@ Focus: Character-driven narrative showing the platform through users' eyes
 - **Both Together**: First show user story (empathy), then investor deck (business case)
 
 ### Navigation Controls
-- **Next Slide**: Right arrow, Space, or "Next" button
-- **Previous Slide**: Left arrow or "Previous" button
+
+#### Desktop
+- **Next Slide**: Right arrow, Space, or "הבא" / "Next" button
+- **Previous Slide**: Left arrow or "הקודם" / "Previous" button
 - **First Slide**: Home key
 - **Last Slide**: End key
-- **Mobile**: Swipe left/right
+
+#### Mobile & Tablet
+- **Horizontal Swipe**: Swipe left for next, right for previous
+- **Vertical Scroll**: Swipe up/down to scroll within long slides
+- **Tap Buttons**: Use on-screen navigation buttons
+- **URL Deep Links**: Share specific slides via #slide-number
+
+#### Smart Touch Behavior
+- Horizontal swipes (>50px) change slides
+- Vertical swipes enable natural scrolling
+- Touch gestures ignore accidental diagonal swipes
 
 ## 🌐 GitHub Pages
 
@@ -95,6 +121,38 @@ To host this presentation live via GitHub Pages:
 - Angel investors
 - Strategic partners in the L&D/EdTech space
 - Enterprise decision-makers
+
+## 🛠️ Technical Specifications
+
+### Architecture
+- **Single-File HTML**: All CSS and JavaScript embedded (no dependencies)
+- **Vanilla JavaScript**: No frameworks, pure ES6+
+- **Performance**: <500KB total page weight, <2s load on 3G
+- **Browser Support**: Chrome, Safari, Firefox (modern browsers)
+
+### Design System
+- **Color Palette**: Monochrome greyscale with #0B0B0B base
+- **Grid System**: 1440×900 artboard, 64px margins, 24px gutters
+- **Typography Scale**: Fluid with clamp() for smooth scaling
+- **Dot Grid Background**: rgba(255,255,255,0.08) subtle texture
+
+### Responsive Breakpoints
+- **Desktop**: 1440px+ (native resolution)
+- **Tablet**: 768px - 1024px
+- **Mobile**: < 768px
+- **Small Phones**: < 375px
+
+### Accessibility
+- **Keyboard Navigation**: Full support for arrow keys, space, home/end
+- **Touch Gestures**: Directional swipe detection
+- **Semantic HTML**: Proper heading hierarchy and ARIA labels
+- **High Contrast**: 7:1 text contrast ratio (WCAG AAA)
+
+### Custom Skills
+- **Frontend Engineer Skill**: Complete implementation guide in `skills/frontend-engineer/`
+- **CSS Patterns**: 940+ lines of reusable component patterns
+- **JavaScript Patterns**: 570+ lines of navigation and interaction code
+- **Mobile Responsiveness**: Comprehensive mobile-first patterns
 
 ## 📧 Contact
 
