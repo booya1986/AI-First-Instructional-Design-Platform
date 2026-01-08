@@ -1055,6 +1055,53 @@
                 gap: 16px !important;
             }
 
+            /* Slide 15: Stack timeline vertically on mobile */
+            .user-timeline {
+                flex-direction: column;
+                gap: 24px;
+                align-items: stretch;
+            }
+
+            .timeline-step {
+                text-align: right;
+                padding-right: 60px;
+            }
+
+            .timeline-step::after {
+                display: none; /* Hide horizontal connector lines */
+            }
+
+            /* Add vertical connector line instead */
+            .timeline-step::before {
+                content: '';
+                position: absolute;
+                top: 45px;
+                right: 19px;
+                width: 2px;
+                height: calc(100% + 24px);
+                background: var(--border);
+                z-index: -1;
+            }
+
+            .timeline-step:last-child::before {
+                display: none;
+            }
+
+            .timeline-dot {
+                position: absolute;
+                right: 0;
+                top: 0;
+            }
+
+            /* Slide 16: Make SVG chart responsive */
+            svg {
+                height: auto !important;
+            }
+
+            [data-slide="16"] svg {
+                margin-bottom: 24px !important;
+            }
+
             /* Reduce margins on mobile */
             .slide-header {
                 margin-bottom: 24px;
