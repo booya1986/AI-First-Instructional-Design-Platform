@@ -174,10 +174,160 @@ JavaScript requirements:
 }
 ```
 
+### Mobile Responsiveness
+
+**Viewport Meta Tag (Required):**
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+```
+
+**Responsive Breakpoints:**
+```css
+/* Tablet: 768px - 1024px */
+@media (max-width: 1024px) {
+    .slide {
+        padding: 48px 32px;
+    }
+
+    h1 {
+        font-size: 36px;
+    }
+
+    .two-column {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .stat-large {
+        font-size: 48px;
+    }
+}
+
+/* Mobile: < 768px */
+@media (max-width: 768px) {
+    .slide {
+        padding: 32px 24px;
+        min-height: 100vh; /* Full viewport height */
+    }
+
+    h1 {
+        font-size: 28px;
+        line-height: 1.2;
+    }
+
+    .subtitle {
+        font-size: 16px;
+    }
+
+    .stat-large {
+        font-size: 36px;
+    }
+
+    .nav-controls {
+        bottom: 24px;
+        right: 24px;
+        gap: 12px;
+    }
+
+    .nav-btn {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+
+    .slide-counter {
+        bottom: 24px;
+        right: 24px;
+        font-size: 12px;
+    }
+
+    /* RTL adjustments */
+    [dir="rtl"] .nav-controls {
+        right: auto;
+        left: 24px;
+    }
+
+    [dir="rtl"] .slide-counter {
+        right: auto;
+        left: 24px;
+    }
+
+    /* Stack cards vertically */
+    .card {
+        padding: 24px;
+        max-width: 100%;
+    }
+
+    /* Hide complex charts on very small screens */
+    svg {
+        overflow: visible;
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* Small phones: < 375px */
+@media (max-width: 375px) {
+    h1 {
+        font-size: 24px;
+    }
+
+    .stat-large {
+        font-size: 32px;
+    }
+
+    .slide {
+        padding: 24px 16px;
+    }
+}
+```
+
+**Touch-Friendly Sizing:**
+- Buttons: minimum 44×44px tap target
+- Font size: minimum 16px for body (prevents zoom on iOS)
+- Spacing: increase touch areas on mobile
+
+**Mobile-Specific Patterns:**
+```css
+/* Hide desktop-only elements */
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none;
+    }
+}
+
+/* Show mobile-only elements */
+.mobile-only {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-only {
+        display: block;
+    }
+}
+
+/* Prevent horizontal scroll */
+body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+/* Improve touch scrolling */
+.slide {
+    -webkit-overflow-scrolling: touch;
+}
+```
+
 ### Performance Optimization
 
 **Image Guidelines:**
 - Character avatars: 200×200px, JPEG 85% quality, ~15KB
+- Responsive images: Use `srcset` for different screen densities
+  ```html
+  <img src="avatar.jpg"
+       srcset="avatar.jpg 1x, avatar@2x.jpg 2x"
+       alt="Character name">
+  ```
 - Use `sips` for batch optimization:
   ```bash
   sips -Z 200 --setProperty format jpeg \
@@ -190,6 +340,13 @@ JavaScript requirements:
 - Minimize specificity (avoid deep nesting)
 - Use `will-change` for animated elements only
 - Prefer `transform` over `top/left` for animations
+- Load critical CSS inline, defer non-critical
+
+**Mobile Performance:**
+- Minimize JavaScript execution on scroll
+- Use passive event listeners: `{ passive: true }`
+- Debounce resize events
+- Lazy load images below the fold
 
 ## Phase 3: Quality Checklist
 
@@ -232,6 +389,25 @@ Before considering work complete, verify:
 - [ ] All images <20KB each
 - [ ] Total page size <500KB
 - [ ] Smooth animations (60fps)
+
+### Mobile Responsiveness
+- [ ] Viewport meta tag present
+- [ ] Minimum 16px font size (prevents iOS zoom)
+- [ ] Touch targets ≥44×44px
+- [ ] No horizontal scroll on mobile
+- [ ] Swipe gestures work smoothly
+- [ ] Text readable without zooming
+- [ ] Images scale properly
+- [ ] Navigation accessible on small screens
+
+### Mobile Device Testing
+- [ ] iPhone (Safari iOS)
+- [ ] Android phone (Chrome)
+- [ ] Tablet (iPad/Android)
+- [ ] Test in portrait orientation
+- [ ] Test in landscape orientation
+- [ ] Verify touch gestures work
+- [ ] Check text legibility
 
 ## Phase 4: Common Patterns
 

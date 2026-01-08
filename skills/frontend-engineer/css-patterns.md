@@ -540,16 +540,74 @@ li::before {
 
 ## Responsive Patterns
 
-### Mobile Breakpoints
+### Mobile-First Base Styles
 ```css
-@media (max-width: 1024px) {
+/* Start mobile, enhance for desktop */
+.slide {
+    padding: 24px 16px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h1 {
+    font-size: 24px;
+    line-height: 1.2;
+}
+
+.subtitle {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.stat-large {
+    font-size: 32px;
+}
+```
+
+### Tablet Breakpoint (768px+)
+```css
+@media (min-width: 768px) {
     .slide {
-        padding: 32px;
+        padding: 32px 24px;
+    }
+
+    h1 {
+        font-size: 32px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+    }
+
+    .stat-large {
+        font-size: 36px;
     }
 
     .two-column {
         grid-template-columns: 1fr;
         gap: 32px;
+    }
+
+    .nav-controls {
+        bottom: 24px;
+        right: 24px;
+        gap: 12px;
+    }
+
+    [dir="rtl"] .nav-controls {
+        right: auto;
+        left: 24px;
+    }
+}
+```
+
+### Desktop Breakpoint (1024px+)
+```css
+@media (min-width: 1024px) {
+    .slide {
+        padding: 48px 32px;
     }
 
     h1 {
@@ -559,25 +617,322 @@ li::before {
     .stat-large {
         font-size: 48px;
     }
-}
 
-@media (max-width: 768px) {
+    .two-column {
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+    }
+}
+```
+
+### Large Desktop (1440px+)
+```css
+@media (min-width: 1440px) {
     .slide {
-        padding: 24px;
+        padding: 64px;
     }
 
     h1 {
-        font-size: 32px;
+        font-size: 48px;
+    }
+
+    .stat-large {
+        font-size: 64px;
+    }
+}
+```
+
+### Mobile-Specific Patterns
+
+#### Touch-Friendly Buttons
+```css
+.nav-btn {
+    /* Minimum 44x44px touch target */
+    min-width: 44px;
+    min-height: 44px;
+    padding: 12px 20px;
+    font-size: 14px;
+
+    /* Improve touch feedback */
+    -webkit-tap-highlight-color: rgba(255,255,255,0.1);
+    touch-action: manipulation;
+}
+
+@media (max-width: 768px) {
+    .nav-btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        /* Still maintains 44px minimum */
+    }
+}
+```
+
+#### Prevent Zoom on Input Focus (iOS)
+```css
+input,
+textarea,
+select {
+    font-size: 16px; /* Prevents iOS zoom */
+}
+```
+
+#### Safe Area for Notch Devices
+```css
+.slide {
+    /* Account for iPhone notch/home indicator */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+}
+
+.nav-controls {
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    right: calc(24px + env(safe-area-inset-right));
+}
+
+[dir="rtl"] .nav-controls {
+    right: auto;
+    left: calc(24px + env(safe-area-inset-left));
+}
+```
+
+#### Prevent Horizontal Scroll
+```css
+body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+* {
+    max-width: 100%;
+}
+
+/* Ensure images don't overflow */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Constrain text */
+h1, p, li {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+}
+```
+
+#### Smooth Touch Scrolling
+```css
+.slide-content {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+}
+
+/* Prevent pull-to-refresh on some browsers */
+body {
+    overscroll-behavior-y: none;
+}
+```
+
+#### Responsive Typography Scale
+```css
+/* Fluid typography */
+h1 {
+    font-size: clamp(24px, 5vw, 48px);
+}
+
+.subtitle {
+    font-size: clamp(14px, 3vw, 18px);
+}
+
+body {
+    font-size: clamp(14px, 2.5vw, 16px);
+}
+
+.stat-large {
+    font-size: clamp(32px, 8vw, 64px);
+}
+```
+
+#### Responsive Spacing
+```css
+.slide {
+    padding: clamp(16px, 4vw, 64px);
+}
+
+.slide-content {
+    gap: clamp(16px, 3vw, 32px);
+}
+```
+
+#### Mobile Navigation
+```css
+@media (max-width: 768px) {
+    .nav-controls {
+        /* Full width on very small screens */
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 16px;
+        background: var(--bg-base);
+        border-top: 1px solid var(--border-subtle);
+        justify-content: space-between;
+    }
+
+    .nav-btn {
+        flex: 1;
+        max-width: 48%;
+    }
+
+    .slide-counter {
+        position: static;
+        text-align: center;
+        width: 100%;
+        margin-bottom: 12px;
+    }
+}
+```
+
+#### Responsive Charts/SVG
+```css
+svg {
+    max-width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+@media (max-width: 768px) {
+    /* Simplify charts on mobile */
+    svg text {
+        font-size: 12px;
+    }
+
+    /* Hide less important labels */
+    svg .secondary-label {
+        display: none;
+    }
+}
+```
+
+#### Landscape Mobile Adjustments
+```css
+@media (max-width: 768px) and (orientation: landscape) {
+    .slide {
+        padding: 16px 24px;
+    }
+
+    h1 {
+        font-size: 20px;
     }
 
     .nav-controls {
-        bottom: 24px;
-        right: 24px;
+        bottom: 12px;
+        right: 12px;
+    }
+}
+```
+
+#### Hide/Show Elements by Screen Size
+```css
+/* Desktop only */
+.desktop-only {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none;
+    }
+}
+
+/* Mobile only */
+.mobile-only {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-only {
+        display: block;
+    }
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+    .tablet-up {
+        display: block;
+    }
+}
+```
+
+#### Responsive Grid Layouts
+```css
+.grid {
+    display: grid;
+    gap: 16px;
+    /* Mobile: 1 column */
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .grid {
+        gap: 24px;
+        /* Tablet: 2 columns */
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .grid {
+        gap: 32px;
+        /* Desktop: 3 columns */
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+```
+
+#### Touch Feedback
+```css
+.nav-btn,
+.interactive {
+    /* Visual feedback on touch */
+    transition: transform 0.1s, background 0.2s;
+}
+
+.nav-btn:active,
+.interactive:active {
+    transform: scale(0.95);
+    background: rgba(255,255,255,0.1);
+}
+
+/* Disable on desktop (use hover instead) */
+@media (hover: hover) {
+    .nav-btn:active,
+    .interactive:active {
+        transform: none;
     }
 
-    [dir="rtl"] .nav-controls {
-        right: auto;
-        left: 24px;
+    .nav-btn:hover {
+        background: rgba(255,255,255,0.05);
+    }
+}
+```
+
+#### Performance: Reduce Animations on Mobile
+```css
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Simpler animations on mobile */
+@media (max-width: 768px) {
+    .fade-in,
+    .slide-enter {
+        animation-duration: 0.3s; /* Faster than desktop */
     }
 }
 ```
