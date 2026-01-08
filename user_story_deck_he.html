@@ -78,9 +78,11 @@
             width: 100vw;
             height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             z-index: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .slide {
@@ -97,7 +99,9 @@
             opacity: 0;
             transform: scale(0.95);
             transition: opacity 0.4s ease, transform 0.4s ease;
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
         }
 
         .slide.active {
@@ -830,11 +834,28 @@
         @media (max-width: 768px) {
             body {
                 font-size: 15px;
+                overflow: visible;
+            }
+
+            #deck {
+                height: 100%;
+                min-height: 100vh;
+                overflow: visible;
             }
 
             .slide {
-                padding: 32px 24px;
+                padding: 24px;
+                padding-bottom: 120px;
                 min-height: 100vh;
+                height: auto;
+                position: static;
+                overflow: visible;
+                transform: none !important;
+                opacity: 1 !important;
+            }
+
+            .slide:not(.active) {
+                display: none !important;
             }
 
             h1 {
