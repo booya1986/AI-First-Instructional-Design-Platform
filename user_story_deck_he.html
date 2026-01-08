@@ -2,7 +2,9 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>שנה את צוות ההדרכה שלך | סיפור משתמש</title>
 
     <!-- Google Fonts -->
@@ -789,31 +791,336 @@
         }
 
         /* ===== RESPONSIVE ===== */
-        @media (max-width: 1440px) {
-            .slide {
-                transform: scale(0.9);
-            }
 
-            .slide.active {
-                transform: scale(0.9);
-            }
-        }
-
+        /* Tablet: 768px - 1024px */
         @media (max-width: 1024px) {
             .slide {
-                transform: scale(0.7);
+                padding: 48px 32px;
             }
 
-            .slide.active {
-                transform: scale(0.7);
+            h1 {
+                font-size: clamp(28px, 4vw, 36px);
+            }
+
+            .subtitle {
+                font-size: clamp(14px, 2.5vw, 16px);
+            }
+
+            .stat-large {
+                font-size: clamp(36px, 6vw, 48px);
             }
 
             .two-column {
                 grid-template-columns: 1fr;
+                gap: 32px;
             }
 
             .process-flow {
                 grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .card {
+                padding: 28px;
+                max-width: 100%;
+            }
+        }
+
+        /* Mobile: < 768px */
+        @media (max-width: 768px) {
+            body {
+                font-size: 15px;
+            }
+
+            .slide {
+                padding: 32px 24px;
+                min-height: 100vh;
+            }
+
+            h1 {
+                font-size: clamp(24px, 5vw, 28px);
+                line-height: 1.3;
+                margin-bottom: 12px;
+            }
+
+            .subtitle {
+                font-size: clamp(14px, 3vw, 16px);
+                line-height: 1.6;
+            }
+
+            .stat-large {
+                font-size: clamp(32px, 7vw, 36px);
+            }
+
+            .label {
+                font-size: 12px;
+            }
+
+            .small {
+                font-size: 12px;
+            }
+
+            /* Navigation */
+            .nav-controls {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                padding: 12px 16px;
+                background: var(--bg-base);
+                border-top: 1px solid var(--border-subtle);
+                display: flex;
+                justify-content: space-between;
+                gap: 12px;
+                z-index: 100;
+            }
+
+            .nav-btn {
+                flex: 1;
+                max-width: 48%;
+                padding: 12px 16px;
+                font-size: 13px;
+                /* Maintain 44px minimum tap target */
+                min-height: 44px;
+                -webkit-tap-highlight-color: rgba(255,255,255,0.1);
+                touch-action: manipulation;
+            }
+
+            .slide-counter {
+                position: fixed;
+                bottom: calc(60px + env(safe-area-inset-bottom));
+                left: 50%;
+                transform: translateX(-50%);
+                right: auto;
+                font-size: 12px;
+            }
+
+            /* Cards and containers */
+            .card {
+                padding: 24px;
+                max-width: 100%;
+                margin: 0 auto;
+            }
+
+            /* Character cards */
+            .character-card {
+                gap: 12px;
+                padding: 16px;
+            }
+
+            .character-avatar {
+                width: 60px;
+                height: 60px;
+            }
+
+            .character-name {
+                font-size: 15px;
+            }
+
+            .character-role {
+                font-size: 13px;
+            }
+
+            /* Messages */
+            .message {
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+
+            .message-text {
+                padding: 12px;
+                font-size: 14px;
+                max-width: 100%;
+            }
+
+            .message-time {
+                font-size: 11px;
+            }
+
+            /* Lists */
+            li {
+                font-size: 15px;
+                margin-bottom: 10px;
+                padding-right: 18px;
+            }
+
+            /* Stats and metrics */
+            .stat-card {
+                padding: 20px;
+            }
+
+            /* Timeline */
+            .timeline-step {
+                padding-right: 32px;
+                margin-bottom: 24px;
+            }
+
+            .timeline-label {
+                font-size: 12px;
+            }
+
+            .timeline-value {
+                font-size: 15px;
+            }
+
+            /* Notifications */
+            .notification {
+                padding: 12px;
+                gap: 10px;
+            }
+
+            .notification-icon {
+                width: 32px;
+                height: 32px;
+            }
+
+            .notification-message {
+                font-size: 14px;
+            }
+
+            /* Loading indicator */
+            .loading-text {
+                font-size: 14px;
+            }
+
+            /* SVG Charts */
+            svg {
+                max-width: 100%;
+                height: auto;
+                overflow: visible;
+            }
+
+            svg text {
+                font-size: 11px;
+            }
+
+            /* CTA buttons */
+            .cta {
+                font-size: 16px;
+                padding: 12px 24px;
+            }
+
+            /* Slide content spacing */
+            .slide-content {
+                gap: 20px;
+            }
+
+            /* Two column becomes single */
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            /* Process flow stacks */
+            .process-flow {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            /* Reduce margins on mobile */
+            .slide-header {
+                margin-bottom: 24px;
+            }
+        }
+
+        /* Small phones: < 375px */
+        @media (max-width: 375px) {
+            .slide {
+                padding: 24px 16px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            .stat-large {
+                font-size: 28px;
+            }
+
+            .nav-btn {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .character-avatar {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        /* Landscape mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .slide {
+                padding: 16px 24px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .nav-controls {
+                padding: 10px 16px;
+            }
+
+            .slide-counter {
+                bottom: calc(50px + env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Safe area support for iPhone notch */
+        @supports (padding: env(safe-area-inset-bottom)) {
+            .nav-controls {
+                padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            }
+
+            @media (max-width: 768px) {
+                .slide {
+                    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+                }
+            }
+        }
+
+        /* Prevent horizontal scroll */
+        body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        /* Smooth touch scrolling */
+        .slide {
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Touch feedback for buttons */
+        @media (max-width: 768px) {
+            .nav-btn:active {
+                transform: scale(0.95);
+                background: rgba(255,255,255,0.15);
+            }
+        }
+
+        /* Reduce animations on mobile */
+        @media (max-width: 768px) {
+            .fade-in {
+                animation-duration: 0.3s;
+            }
+        }
+
+        /* Accessibility: Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
