@@ -1102,6 +1102,21 @@
                 margin-bottom: 24px !important;
             }
 
+            /* Slide 16: Scale down chart to fit mobile screen */
+            [data-slide="16"] .slide-content > div {
+                max-width: 100% !important;
+                padding: 0 8px;
+            }
+
+            [data-slide="16"] svg {
+                overflow: visible;
+            }
+
+            /* Make SVG text smaller on mobile */
+            [data-slide="16"] svg text {
+                font-size: 11px !important;
+            }
+
             /* Slide 19: ROI cards need better spacing on mobile */
             [data-slide="19"] .card {
                 margin-bottom: 16px;
