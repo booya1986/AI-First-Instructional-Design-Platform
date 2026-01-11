@@ -81,8 +81,7 @@
             align-items: flex-start;
             justify-content: center;
             z-index: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         .slide {
@@ -99,9 +98,7 @@
             opacity: 0;
             transform: scale(0.95);
             transition: opacity 0.4s ease, transform 0.4s ease;
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
+            overflow: hidden;
         }
 
         .slide.active {
