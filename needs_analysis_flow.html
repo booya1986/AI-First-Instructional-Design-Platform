@@ -22,19 +22,18 @@
             --border: rgba(255,255,255,0.12);
             --border-soft: rgba(255,255,255,0.06);
 
-            /* Phase gradients (reused from character palette) */
-            --phase-prep: linear-gradient(135deg, #667eea, #764ba2);
-            --phase-collect: linear-gradient(135deg, #4facfe, #00f2fe);
-            --phase-synth: linear-gradient(135deg, #f093fb, #f5576c);
-            --phase-validate: linear-gradient(135deg, #43e97b, #38f9d7);
-            --phase-final: linear-gradient(135deg, #fbbf24, #f59e0b);
+            /* Monochrome — all phases share the same neutral palette */
+            --phase-prep: #FFFFFF;
+            --phase-collect: #FFFFFF;
+            --phase-synth: #FFFFFF;
+            --phase-validate: #FFFFFF;
+            --phase-final: #FFFFFF;
 
-            /* Phase solids (for borders, dots) */
-            --phase-prep-solid: #764ba2;
-            --phase-collect-solid: #4facfe;
-            --phase-synth-solid: #f5576c;
-            --phase-validate-solid: #43e97b;
-            --phase-final-solid: #f59e0b;
+            --phase-prep-solid: rgba(255,255,255,0.85);
+            --phase-collect-solid: rgba(255,255,255,0.85);
+            --phase-synth-solid: rgba(255,255,255,0.85);
+            --phase-validate-solid: rgba(255,255,255,0.85);
+            --phase-final-solid: rgba(255,255,255,0.85);
 
             --font: 'Noto Sans Hebrew', sans-serif;
         }
@@ -170,15 +169,25 @@
         }
 
         .legend-icon {
-            width: 18px;
-            height: 18px;
-            border-radius: 5px;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 1.2px solid var(--text-primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
-            color: white;
-            font-weight: 600;
+            color: var(--text-primary);
+            flex-shrink: 0;
+        }
+
+        .legend-icon svg {
+            width: 13px;
+            height: 13px;
+            stroke: var(--text-primary);
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         /* ===== FLOW ===== */
@@ -206,9 +215,9 @@
             position: absolute;
             top: 0;
             inset-inline-end: 0;
-            width: 4px;
+            width: 3px;
             height: 100%;
-            background: var(--phase-grad, var(--phase-prep));
+            background: rgba(255,255,255,0.4);
         }
 
         .step:nth-of-type(1) { animation-delay: 0.35s; }
@@ -231,14 +240,14 @@
         .step-num {
             width: 64px;
             height: 64px;
-            background: var(--phase-grad, var(--phase-prep));
+            background: #FFFFFF;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 26px;
             font-weight: 700;
-            color: white;
+            color: #0B0B0B;
             flex-shrink: 0;
         }
 
@@ -303,6 +312,20 @@
             letter-spacing: 0.5px;
             color: var(--text-tertiary);
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meta-label svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-primary);
+            fill: none;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
         }
 
         .chips {
@@ -343,14 +366,23 @@
         .outputs-icon {
             width: 28px;
             height: 28px;
-            background: var(--phase-grad, var(--phase-prep));
+            border: 1.5px solid var(--text-primary);
             border-radius: 7px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 14px;
-            font-weight: 700;
+            color: var(--text-primary);
+            flex-shrink: 0;
+        }
+
+        .outputs-icon svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-primary);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .outputs-title {
@@ -383,12 +415,12 @@
 
         .outputs-list li::before {
             content: '';
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
-            background: var(--phase-color, var(--text-tertiary));
+            background: var(--text-secondary);
             flex-shrink: 0;
-            margin-top: 7px;
+            margin-top: 8px;
         }
 
         .outputs-list li strong {
@@ -398,7 +430,7 @@
             margin-bottom: 2px;
         }
 
-        /* ===== ARROW (FLIPPED — points up) ===== */
+        /* ===== ARROW (points down — flow direction) ===== */
         .arrow {
             display: flex;
             justify-content: center;
@@ -508,15 +540,21 @@
     <!-- Legend -->
     <div class="legend">
         <div class="legend-item">
-            <span class="legend-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">A</span>
+            <span class="legend-icon">
+                <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
+            </span>
             <span>סוכן AI</span>
         </div>
         <div class="legend-item">
-            <span class="legend-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">S</span>
+            <span class="legend-icon">
+                <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </span>
             <span>סקיל / יכולת</span>
         </div>
         <div class="legend-item">
-            <span class="legend-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">✓</span>
+            <span class="legend-icon">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
             <span>תוצרים</span>
         </div>
     </div>
@@ -535,13 +573,19 @@
             </div>
             <div class="step-meta">
                 <div class="meta-block">
-                    <div class="meta-label">סוכן</div>
+                    <div class="meta-label">
+                        <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
+                        סוכן
+                    </div>
                     <div class="chips">
                         <span class="chip agent">סוכן חוקר מגמות (per domain)</span>
                     </div>
                 </div>
                 <div class="meta-block">
-                    <div class="meta-label">סקילים</div>
+                    <div class="meta-label">
+                        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        סקילים
+                    </div>
                     <div class="chips">
                         <span class="chip">Web search</span>
                         <span class="chip">Deep research</span>
@@ -551,7 +595,9 @@
             </div>
             <div class="outputs">
                 <div class="outputs-header">
-                    <div class="outputs-icon">✓</div>
+                    <div class="outputs-icon">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
                     <div class="outputs-title">תוצרים</div>
                 </div>
                 <ul class="outputs-list">
@@ -563,7 +609,7 @@
             </div>
         </div>
 
-        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
 
         <!-- STEP 2 -->
         <div class="step" style="--phase-grad: var(--phase-prep); --phase-color: var(--phase-prep-solid);">
@@ -577,13 +623,19 @@
             </div>
             <div class="step-meta">
                 <div class="meta-block">
-                    <div class="meta-label">סוכן</div>
+                    <div class="meta-label">
+                        <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
+                        סוכן
+                    </div>
                     <div class="chips">
                         <span class="chip agent">סוכן אנליסט ביצועים</span>
                     </div>
                 </div>
                 <div class="meta-block">
-                    <div class="meta-label">סקילים</div>
+                    <div class="meta-label">
+                        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        סקילים
+                    </div>
                     <div class="chips">
                         <span class="chip">KPI analysis</span>
                         <span class="chip">Lessons learned extraction</span>
@@ -593,7 +645,9 @@
             </div>
             <div class="outputs">
                 <div class="outputs-header">
-                    <div class="outputs-icon">✓</div>
+                    <div class="outputs-icon">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
                     <div class="outputs-title">תוצרים</div>
                 </div>
                 <ul class="outputs-list">
@@ -605,7 +659,7 @@
             </div>
         </div>
 
-        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
 
         <!-- STEP 3 -->
         <div class="step" style="--phase-grad: var(--phase-collect); --phase-color: var(--phase-collect-solid);">
@@ -619,13 +673,19 @@
             </div>
             <div class="step-meta">
                 <div class="meta-block">
-                    <div class="meta-label">סוכן</div>
+                    <div class="meta-label">
+                        <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
+                        סוכן
+                    </div>
                     <div class="chips">
                         <span class="chip agent">סוכן מראיין (Voice / Chat)</span>
                     </div>
                 </div>
                 <div class="meta-block">
-                    <div class="meta-label">סקילים</div>
+                    <div class="meta-label">
+                        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        סקילים
+                    </div>
                     <div class="chips">
                         <span class="chip">Adaptive questioning</span>
                         <span class="chip">Active listening + probing</span>
@@ -635,7 +695,9 @@
             </div>
             <div class="outputs">
                 <div class="outputs-header">
-                    <div class="outputs-icon">✓</div>
+                    <div class="outputs-icon">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
                     <div class="outputs-title">תוצרים</div>
                 </div>
                 <ul class="outputs-list">
@@ -648,7 +710,7 @@
             </div>
         </div>
 
-        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
 
         <!-- STEP 4 -->
         <div class="step" style="--phase-grad: var(--phase-synth); --phase-color: var(--phase-synth-solid);">
@@ -662,13 +724,19 @@
             </div>
             <div class="step-meta">
                 <div class="meta-block">
-                    <div class="meta-label">סוכן</div>
+                    <div class="meta-label">
+                        <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
+                        סוכן
+                    </div>
                     <div class="chips">
                         <span class="chip agent">סוכן סינתזה (Insight synthesizer)</span>
                     </div>
                 </div>
                 <div class="meta-block">
-                    <div class="meta-label">סקילים</div>
+                    <div class="meta-label">
+                        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        סקילים
+                    </div>
                     <div class="chips">
                         <span class="chip">Cross-source pattern matching</span>
                         <span class="chip">Hypothesis generation</span>
@@ -678,7 +746,9 @@
             </div>
             <div class="outputs">
                 <div class="outputs-header">
-                    <div class="outputs-icon">✓</div>
+                    <div class="outputs-icon">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
                     <div class="outputs-title">תוצרים</div>
                 </div>
                 <ul class="outputs-list">
@@ -690,7 +760,7 @@
             </div>
         </div>
 
-        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
 
         <!-- STEP 5 -->
         <div class="step" style="--phase-grad: var(--phase-validate); --phase-color: var(--phase-validate-solid);">
@@ -704,13 +774,19 @@
             </div>
             <div class="step-meta">
                 <div class="meta-block">
-                    <div class="meta-label">סוכן</div>
+                    <div class="meta-label">
+                        <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
+                        סוכן
+                    </div>
                     <div class="chips">
                         <span class="chip agent">סוכן בונה עמודי נחיתה אישיים</span>
                     </div>
                 </div>
                 <div class="meta-block">
-                    <div class="meta-label">סקילים</div>
+                    <div class="meta-label">
+                        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        סקילים
+                    </div>
                     <div class="chips">
                         <span class="chip">Personalized landing page</span>
                         <span class="chip">Form + feedback UX</span>
@@ -720,7 +796,9 @@
             </div>
             <div class="outputs">
                 <div class="outputs-header">
-                    <div class="outputs-icon">✓</div>
+                    <div class="outputs-icon">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
                     <div class="outputs-title">תוצרים</div>
                 </div>
                 <ul class="outputs-list">
@@ -732,7 +810,7 @@
             </div>
         </div>
 
-        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
 
         <!-- STEP 6 -->
         <div class="step" style="--phase-grad: var(--phase-validate); --phase-color: var(--phase-validate-solid);">
@@ -746,13 +824,19 @@
             </div>
             <div class="step-meta">
                 <div class="meta-block">
-                    <div class="meta-label">סוכן</div>
+                    <div class="meta-label">
+                        <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
+                        סוכן
+                    </div>
                     <div class="chips">
                         <span class="chip agent">סוכן איסוף ותיוג תגובות</span>
                     </div>
                 </div>
                 <div class="meta-block">
-                    <div class="meta-label">סקילים</div>
+                    <div class="meta-label">
+                        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        סקילים
+                    </div>
                     <div class="chips">
                         <span class="chip">Response tracking</span>
                         <span class="chip">Feedback normalization</span>
@@ -762,7 +846,9 @@
             </div>
             <div class="outputs">
                 <div class="outputs-header">
-                    <div class="outputs-icon">✓</div>
+                    <div class="outputs-icon">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
                     <div class="outputs-title">תוצרים</div>
                 </div>
                 <ul class="outputs-list">
@@ -774,7 +860,7 @@
             </div>
         </div>
 
-        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
 
         <!-- STEP 7 -->
         <div class="step" style="--phase-grad: var(--phase-final); --phase-color: var(--phase-final-solid);">
@@ -788,13 +874,19 @@
             </div>
             <div class="step-meta">
                 <div class="meta-block">
-                    <div class="meta-label">סוכן</div>
+                    <div class="meta-label">
+                        <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
+                        סוכן
+                    </div>
                     <div class="chips">
                         <span class="chip agent">סוכן קונסולידציה</span>
                     </div>
                 </div>
                 <div class="meta-block">
-                    <div class="meta-label">סקילים</div>
+                    <div class="meta-label">
+                        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        סקילים
+                    </div>
                     <div class="chips">
                         <span class="chip">Cross-unit clustering</span>
                         <span class="chip">Gap & uniqueness analysis</span>
@@ -804,7 +896,9 @@
             </div>
             <div class="outputs">
                 <div class="outputs-header">
-                    <div class="outputs-icon">✓</div>
+                    <div class="outputs-icon">
+                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
                     <div class="outputs-title">תוצרים</div>
                 </div>
                 <ul class="outputs-list">
