@@ -1,794 +1,827 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>תהליך ניתוח צרכים ארגוניים וצרכי למידה שנתי</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>תהליך ניתוח צרכים שנתי | AI-First L&D</title>
 
-  :root {
-    --bg: #f6f7fb;
-    --bg-grad-1: #eef0ff;
-    --bg-grad-2: #f8f0ff;
-    --ink: #0f172a;
-    --ink-2: #1e293b;
-    --muted: #64748b;
-    --muted-2: #94a3b8;
-    --line: #e2e8f0;
-    --line-soft: #f1f5f9;
-    --card: #ffffff;
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    --primary: #4f46e5;
-    --primary-soft: #eef2ff;
-    --primary-deep: #3730a3;
+    <style>
+        /* ===== DESIGN TOKENS (matches deck) ===== */
+        :root {
+            --bg-base: #0B0B0B;
+            --bg-elevated: #111111;
+            --bg-elevated-2: #161616;
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255,255,255,0.72);
+            --text-tertiary: rgba(255,255,255,0.56);
+            --text-quaternary: rgba(255,255,255,0.4);
+            --border: rgba(255,255,255,0.12);
+            --border-soft: rgba(255,255,255,0.06);
 
-    --agent: #ecfdf5;
-    --agent-ink: #047857;
-    --agent-border: #a7f3d0;
+            /* Phase gradients (reused from character palette) */
+            --phase-prep: linear-gradient(135deg, #667eea, #764ba2);
+            --phase-collect: linear-gradient(135deg, #4facfe, #00f2fe);
+            --phase-synth: linear-gradient(135deg, #f093fb, #f5576c);
+            --phase-validate: linear-gradient(135deg, #43e97b, #38f9d7);
+            --phase-final: linear-gradient(135deg, #fbbf24, #f59e0b);
 
-    --skill: #fffbeb;
-    --skill-ink: #b45309;
-    --skill-border: #fde68a;
+            /* Phase solids (for borders, dots) */
+            --phase-prep-solid: #764ba2;
+            --phase-collect-solid: #4facfe;
+            --phase-synth-solid: #f5576c;
+            --phase-validate-solid: #43e97b;
+            --phase-final-solid: #f59e0b;
 
-    --output-bg: #fdf2f8;
-    --output-ink: #9d174d;
-    --output-accent: #ec4899;
-    --output-border: #fbcfe8;
+            --font: 'Noto Sans Hebrew', sans-serif;
+        }
 
-    --phase-prep: #6366f1;
-    --phase-collect: #0891b2;
-    --phase-synth: #7c3aed;
-    --phase-validate: #db2777;
-    --phase-final: #059669;
-  }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
-    font-family: 'Heebo', sans-serif;
-    background:
-      radial-gradient(circle at 0% 0%, var(--bg-grad-1) 0%, transparent 40%),
-      radial-gradient(circle at 100% 100%, var(--bg-grad-2) 0%, transparent 40%),
-      var(--bg);
-    background-attachment: fixed;
-    color: var(--ink);
-    padding: 56px 20px 100px;
-    line-height: 1.55;
-    min-height: 100vh;
-  }
+        body {
+            font-family: var(--font);
+            background: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+            position: relative;
+        }
 
-  .container {
-    max-width: 1080px;
-    margin: 0 auto;
-  }
+        /* Dot grid background — same as deck */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1.5px, transparent 1.5px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-  /* Header */
-  header {
-    text-align: center;
-    margin-bottom: 48px;
-  }
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 80px 64px 100px;
+        }
 
-  .eyebrow {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--primary);
-    background: var(--primary-soft);
-    padding: 6px 14px;
-    border-radius: 999px;
-    letter-spacing: 0.5px;
-    margin-bottom: 18px;
-  }
+        /* ===== HEADER ===== */
+        header {
+            text-align: center;
+            margin-bottom: 56px;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
 
-  h1 {
-    font-size: 42px;
-    font-weight: 800;
-    margin-bottom: 14px;
-    background: linear-gradient(135deg, #1e1b4b 0%, #4f46e5 60%, #7c3aed 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -0.5px;
-  }
+        .eyebrow {
+            display: inline-block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            padding: 6px 14px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+        }
 
-  .subtitle {
-    font-size: 17px;
-    color: var(--muted);
-    max-width: 640px;
-    margin: 0 auto;
-  }
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
 
-  /* Phase tracker */
-  .phase-tracker {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 18px 24px;
-    margin-bottom: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
-  }
+        .subtitle {
+            font-size: 17px;
+            color: var(--text-secondary);
+            max-width: 660px;
+            margin: 0 auto;
+        }
 
-  .phase-pill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    white-space: nowrap;
-  }
+        /* ===== PHASE TRACKER ===== */
+        .phase-tracker {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 32px;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+            animation-delay: 0.15s;
+        }
 
-  .phase-pill .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
+        .phase-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 4px 8px;
+        }
 
-  .phase-sep {
-    color: var(--line);
-    font-size: 16px;
-  }
+        .phase-pill .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
 
-  /* Legend */
-  .legend {
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-    margin-bottom: 36px;
-    flex-wrap: wrap;
-  }
+        .phase-sep {
+            color: var(--text-quaternary);
+            font-size: 14px;
+            margin: 0 4px;
+        }
 
-  .legend-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--card);
-    padding: 8px 14px;
-    border-radius: 10px;
-    font-size: 13px;
-    border: 1px solid var(--line);
-    color: var(--ink-2);
-    font-weight: 500;
-  }
+        /* ===== LEGEND ===== */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 48px;
+            flex-wrap: wrap;
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+            animation-delay: 0.25s;
+        }
 
-  .legend-icon {
-    width: 16px;
-    height: 16px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    color: white;
-    font-weight: 700;
-  }
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 14px;
+        }
 
-  /* Flow */
-  .flow {
-    position: relative;
-  }
+        .legend-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: white;
+            font-weight: 600;
+        }
 
-  .step {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 20px;
-    margin-bottom: 18px;
-    overflow: hidden;
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 0 0 0 rgba(79, 70, 229, 0);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    position: relative;
-  }
+        /* ===== FLOW ===== */
+        .flow { position: relative; }
 
-  .step::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    inset-inline-end: 0;
-    width: 5px;
-    height: 100%;
-    background: var(--phase-color, var(--primary));
-  }
+        .step {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            position: relative;
+            animation: floatIn 0.6s ease-out forwards;
+            opacity: 0;
+            transition: border-color 0.25s ease, transform 0.25s ease;
+        }
 
-  .step:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(79, 70, 229, 0.10), 0 0 0 1px rgba(79, 70, 229, 0.04);
-    border-color: rgba(79, 70, 229, 0.2);
-  }
+        .step:hover {
+            border-color: var(--text-quaternary);
+            transform: translateY(-2px);
+        }
 
-  .step-top {
-    padding: 28px 32px 24px;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 24px;
-    align-items: start;
-  }
+        .step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            inset-inline-end: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--phase-grad, var(--phase-prep));
+        }
 
-  .step-num {
-    width: 64px;
-    height: 64px;
-    background: linear-gradient(135deg, var(--phase-color, var(--primary)) 0%, var(--phase-color-2, var(--primary-deep)) 100%);
-    color: white;
-    border-radius: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    font-weight: 800;
-    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.25);
-    flex-shrink: 0;
-  }
+        .step:nth-of-type(1) { animation-delay: 0.35s; }
+        .step:nth-of-type(2) { animation-delay: 0.45s; }
+        .step:nth-of-type(3) { animation-delay: 0.55s; }
+        .step:nth-of-type(4) { animation-delay: 0.65s; }
+        .step:nth-of-type(5) { animation-delay: 0.75s; }
+        .step:nth-of-type(6) { animation-delay: 0.85s; }
+        .step:nth-of-type(7) { animation-delay: 0.95s; }
 
-  .step-head h2 {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 8px;
-    color: var(--ink);
-    letter-spacing: -0.2px;
-  }
+        /* Top section: number + title + phase */
+        .step-top {
+            padding: 28px 32px 22px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 24px;
+            align-items: start;
+        }
 
-  .step-head p {
-    font-size: 15px;
-    color: var(--muted);
-    max-width: 580px;
-  }
+        .step-num {
+            width: 64px;
+            height: 64px;
+            background: var(--phase-grad, var(--phase-prep));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
 
-  .phase-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 6px 12px;
-    border-radius: 8px;
-    letter-spacing: 0.4px;
-    background: color-mix(in srgb, var(--phase-color) 10%, white);
-    color: var(--phase-color);
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
+        .step-head h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            letter-spacing: -0.2px;
+        }
 
-  .phase-label::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--phase-color);
-  }
+        .step-head p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-width: 620px;
+        }
 
-  /* Agent & Skills row */
-  .step-meta {
-    padding: 0 32px 22px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-  }
+        .phase-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 999px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
 
-  .meta-block {
-    background: var(--line-soft);
-    border-radius: 12px;
-    padding: 14px 16px;
-  }
+        .phase-label::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--phase-color, #fff);
+        }
 
-  .meta-label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--muted);
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+        /* Meta row: agent + skills */
+        .step-meta {
+            padding: 0 32px 22px;
+            display: grid;
+            grid-template-columns: 1fr 1.6fr;
+            gap: 16px;
+        }
 
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
+        .meta-block {
+            background: var(--bg-elevated-2);
+            border: 1px solid var(--border-soft);
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
 
-  .chip {
-    font-size: 13px;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    border: 1px solid transparent;
-  }
+        .meta-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-tertiary);
+            margin-bottom: 10px;
+        }
 
-  .chip.agent {
-    background: var(--agent);
-    color: var(--agent-ink);
-    border-color: var(--agent-border);
-  }
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
 
-  .chip.skill {
-    background: var(--skill);
-    color: var(--skill-ink);
-    border-color: var(--skill-border);
-  }
+        .chip {
+            font-size: 13px;
+            padding: 5px 11px;
+            border-radius: 6px;
+            font-weight: 500;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
 
-  /* Outputs section */
-  .outputs {
-    background: linear-gradient(135deg, var(--output-bg) 0%, #fef7fb 100%);
-    border-top: 1px solid var(--output-border);
-    padding: 22px 32px 26px;
-  }
+        .chip.agent {
+            color: var(--text-primary);
+            background: rgba(255,255,255,0.08);
+        }
 
-  .outputs-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
+        /* Outputs section */
+        .outputs {
+            background: var(--bg-elevated-2);
+            border-top: 1px solid var(--border);
+            padding: 22px 32px 26px;
+        }
 
-  .outputs-icon {
-    width: 32px;
-    height: 32px;
-    background: var(--output-accent);
-    border-radius: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 16px;
-    box-shadow: 0 4px 10px rgba(236, 72, 153, 0.25);
-  }
+        .outputs-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
 
-  .outputs-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--output-ink);
-  }
+        .outputs-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--phase-grad, var(--phase-prep));
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+        }
 
-  .outputs-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 8px;
-    list-style: none;
-  }
+        .outputs-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
 
-  .outputs-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 14px;
-    color: var(--ink-2);
-    background: rgba(255, 255, 255, 0.6);
-    padding: 10px 12px;
-    border-radius: 9px;
-    border: 1px solid rgba(251, 207, 232, 0.5);
-  }
+        .outputs-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 8px;
+            list-style: none;
+        }
 
-  .outputs-list li::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--output-accent);
-    flex-shrink: 0;
-    margin-top: 8px;
-  }
+        .outputs-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            background: var(--bg-base);
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-soft);
+            line-height: 1.5;
+        }
 
-  .outputs-list li strong {
-    font-weight: 600;
-    color: var(--output-ink);
-  }
+        .outputs-list li::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--phase-color, var(--text-tertiary));
+            flex-shrink: 0;
+            margin-top: 7px;
+        }
 
-  /* Arrow connector */
-  .arrow {
-    display: flex;
-    justify-content: flex-start;
-    margin: -8px 0 -8px 32px;
-    padding-inline-end: 92px;
-  }
+        .outputs-list li strong {
+            font-weight: 600;
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 2px;
+        }
 
-  .arrow svg {
-    width: 22px;
-    height: 22px;
-    color: var(--muted-2);
-    opacity: 0.6;
-  }
+        /* ===== ARROW (FLIPPED — points up) ===== */
+        .arrow {
+            display: flex;
+            justify-content: center;
+            margin: -6px 0;
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            animation: floatIn 0.4s ease-out forwards;
+        }
 
-  /* Footer */
-  footer {
-    margin-top: 64px;
-    text-align: center;
-    color: var(--muted);
-    font-size: 13px;
-    padding-top: 24px;
-    border-top: 1px solid var(--line);
-  }
+        .arrow:nth-of-type(1) { animation-delay: 0.50s; }
+        .arrow:nth-of-type(2) { animation-delay: 0.60s; }
+        .arrow:nth-of-type(3) { animation-delay: 0.70s; }
+        .arrow:nth-of-type(4) { animation-delay: 0.80s; }
+        .arrow:nth-of-type(5) { animation-delay: 0.90s; }
+        .arrow:nth-of-type(6) { animation-delay: 1.00s; }
 
-  footer strong {
-    color: var(--ink-2);
-    font-weight: 600;
-  }
+        .arrow svg {
+            width: 28px;
+            height: 28px;
+            color: var(--text-tertiary);
+        }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    body { padding: 32px 14px 60px; }
-    h1 { font-size: 28px; }
-    .subtitle { font-size: 15px; }
-    .step-top {
-      grid-template-columns: auto 1fr;
-      padding: 22px 22px 18px;
-    }
-    .phase-label {
-      grid-column: 1 / -1;
-      justify-self: start;
-      margin-top: 8px;
-    }
-    .step-meta {
-      grid-template-columns: 1fr;
-      padding: 0 22px 18px;
-      gap: 12px;
-    }
-    .outputs { padding: 18px 22px 22px; }
-    .outputs-list { grid-template-columns: 1fr; }
-    .phase-tracker {
-      flex-direction: column;
-      align-items: stretch;
-      padding: 14px 18px;
-    }
-    .phase-sep { display: none; }
-    .step-num {
-      width: 52px;
-      height: 52px;
-      font-size: 22px;
-      border-radius: 14px;
-    }
-    .arrow { margin: -8px 0; justify-content: center; padding: 0; }
-  }
-</style>
+        /* ===== FOOTER ===== */
+        footer {
+            margin-top: 64px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 13px;
+        }
+
+        footer strong {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes floatIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .container { padding: 56px 32px 80px; }
+            h1 { font-size: 36px; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 40px 16px 60px; }
+            h1 { font-size: 28px; }
+            .subtitle { font-size: 15px; }
+            .step-top {
+                grid-template-columns: auto 1fr;
+                padding: 22px 22px 16px;
+            }
+            .phase-label {
+                grid-column: 1 / -1;
+                justify-self: start;
+                margin-top: 8px;
+            }
+            .step-meta {
+                grid-template-columns: 1fr;
+                padding: 0 22px 18px;
+                gap: 10px;
+            }
+            .outputs { padding: 18px 22px 22px; }
+            .outputs-list { grid-template-columns: 1fr; }
+            .step-num {
+                width: 52px;
+                height: 52px;
+                font-size: 22px;
+            }
+            .phase-tracker {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 16px;
+            }
+            .phase-sep { display: none; }
+        }
+    </style>
 </head>
 <body>
 <div class="container">
 
-  <header>
-    <span class="eyebrow">L&D · AI-First</span>
-    <h1>תהליך ניתוח צרכים שנתי</h1>
-    <p class="subtitle">מאיתור עד קונסולידציה — מי עושה מה, אילו סקילים נדרשים, ואילו תוצרים יוצאים מכל שלב</p>
-  </header>
+    <header>
+        <span class="eyebrow">AI-First L&D</span>
+        <h1>תהליך ניתוח צרכים שנתי</h1>
+        <p class="subtitle">מאיתור עד קונסולידציה — מי עושה מה, אילו סקילים נדרשים, ואילו תוצרים יוצאים מכל שלב</p>
+    </header>
 
-  <!-- Phase tracker -->
-  <div class="phase-tracker">
-    <div class="phase-pill"><span class="dot" style="background: var(--phase-prep)"></span>הכנה</div>
-    <span class="phase-sep">→</span>
-    <div class="phase-pill"><span class="dot" style="background: var(--phase-collect)"></span>איסוף</div>
-    <span class="phase-sep">→</span>
-    <div class="phase-pill"><span class="dot" style="background: var(--phase-synth)"></span>סינתזה</div>
-    <span class="phase-sep">→</span>
-    <div class="phase-pill"><span class="dot" style="background: var(--phase-validate)"></span>תיקוף</div>
-    <span class="phase-sep">→</span>
-    <div class="phase-pill"><span class="dot" style="background: var(--phase-final)"></span>סיכום</div>
-  </div>
-
-  <!-- Legend -->
-  <div class="legend">
-    <div class="legend-item">
-      <span class="legend-icon" style="background: #10b981;">A</span>
-      <span>סוכן AI</span>
-    </div>
-    <div class="legend-item">
-      <span class="legend-icon" style="background: #f59e0b;">S</span>
-      <span>סקיל / יכולת</span>
-    </div>
-    <div class="legend-item">
-      <span class="legend-icon" style="background: #ec4899;">✓</span>
-      <span>תוצרים</span>
-    </div>
-  </div>
-
-  <div class="flow">
-
-    <!-- STEP 1 -->
-    <div class="step" style="--phase-color: var(--phase-prep); --phase-color-2: #4338ca;">
-      <div class="step-top">
-        <div class="step-num">1</div>
-        <div class="step-head">
-          <h2>מחקר מגמות לפי תחום</h2>
-          <p>לפני פגישות איתור הצרכים — סריקה של מגמות בכל תחום עיסוק בארגון (משפט, פיתוח, מכירות, תפעול). מה קורה בשוק, מה מתחרים עושים, מה הרגולציה החדשה.</p>
-        </div>
-        <span class="phase-label">הכנה</span>
-      </div>
-      <div class="step-meta">
-        <div class="meta-block">
-          <div class="meta-label">🤖 סוכן</div>
-          <div class="chips">
-            <span class="chip agent">סוכן חוקר מגמות (per domain)</span>
-          </div>
-        </div>
-        <div class="meta-block">
-          <div class="meta-label">⚙️ סקילים</div>
-          <div class="chips">
-            <span class="chip skill">Web search</span>
-            <span class="chip skill">Deep research</span>
-            <span class="chip skill">Industry benchmarking</span>
-          </div>
-        </div>
-      </div>
-      <div class="outputs">
-        <div class="outputs-header">
-          <div class="outputs-icon">✓</div>
-          <div class="outputs-title">תוצרים</div>
-        </div>
-        <ul class="outputs-list">
-          <li><span><strong>דוח מגמות</strong> — מסמך מפורט לכל תחום, 5–10 עמ׳</span></li>
-          <li><span><strong>סיכום אקזקיוטיבי</strong> — 1-pager לכל תחום</span></li>
-          <li><span><strong>מאגר מקורות</strong> — לינקים מתויגים ומדורגים</span></li>
-          <li><span><strong>היפותזות ראשוניות</strong> — לבדיקה בראיונות</span></li>
-        </ul>
-      </div>
+    <!-- Phase tracker -->
+    <div class="phase-tracker">
+        <div class="phase-pill"><span class="dot" style="background: var(--phase-prep-solid)"></span>הכנה</div>
+        <span class="phase-sep">←</span>
+        <div class="phase-pill"><span class="dot" style="background: var(--phase-collect-solid)"></span>איסוף</div>
+        <span class="phase-sep">←</span>
+        <div class="phase-pill"><span class="dot" style="background: var(--phase-synth-solid)"></span>סינתזה</div>
+        <span class="phase-sep">←</span>
+        <div class="phase-pill"><span class="dot" style="background: var(--phase-validate-solid)"></span>תיקוף</div>
+        <span class="phase-sep">←</span>
+        <div class="phase-pill"><span class="dot" style="background: var(--phase-final-solid)"></span>סיכום</div>
     </div>
 
-    <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
-
-    <!-- STEP 2 -->
-    <div class="step" style="--phase-color: var(--phase-prep); --phase-color-2: #4338ca;">
-      <div class="step-top">
-        <div class="step-num">2</div>
-        <div class="step-head">
-          <h2>ניתוח ביצועים ועמידה ביעדים</h2>
-          <p>מיפוי השנה שעברה — באילו תוכניות עמדנו ביעדים, מה עבד, מה לא, ומה הלקחים. ניתוח KPI, סקרי שביעות רצון, ותוצאות עסקיות שיוחסו להדרכות.</p>
+    <!-- Legend -->
+    <div class="legend">
+        <div class="legend-item">
+            <span class="legend-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">A</span>
+            <span>סוכן AI</span>
         </div>
-        <span class="phase-label">הכנה</span>
-      </div>
-      <div class="step-meta">
-        <div class="meta-block">
-          <div class="meta-label">🤖 סוכן</div>
-          <div class="chips">
-            <span class="chip agent">סוכן אנליסט ביצועים</span>
-          </div>
+        <div class="legend-item">
+            <span class="legend-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">S</span>
+            <span>סקיל / יכולת</span>
         </div>
-        <div class="meta-block">
-          <div class="meta-label">⚙️ סקילים</div>
-          <div class="chips">
-            <span class="chip skill">KPI analysis</span>
-            <span class="chip skill">Lessons learned extraction</span>
-            <span class="chip skill">ROI attribution</span>
-          </div>
+        <div class="legend-item">
+            <span class="legend-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">✓</span>
+            <span>תוצרים</span>
         </div>
-      </div>
-      <div class="outputs">
-        <div class="outputs-header">
-          <div class="outputs-icon">✓</div>
-          <div class="outputs-title">תוצרים</div>
-        </div>
-        <ul class="outputs-list">
-          <li><span><strong>דוח ביצועים</strong> — מול יעדי השנה שעברה</span></li>
-          <li><span><strong>מפת הצלחות וכישלונות</strong> — תוכניות מסווגות</span></li>
-          <li><span><strong>לקחים מסווגים</strong> — Success patterns + Failure patterns</span></li>
-          <li><span><strong>Benchmark פנימי</strong> — בין יחידות בארגון</span></li>
-        </ul>
-      </div>
     </div>
 
-    <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
+    <div class="flow">
 
-    <!-- STEP 3 -->
-    <div class="step" style="--phase-color: var(--phase-collect); --phase-color-2: #0e7490;">
-      <div class="step-top">
-        <div class="step-num">3</div>
-        <div class="step-head">
-          <h2>תשאול איתור צרכים — שיחות עם מנהלים</h2>
-          <p>סוכן שמבצע שיחות תחקור עם מנהלי צוותים, מנהלי מחלקות ועד דרג VP. מבין מה כואב, מה צריך לקרות, מה מצופה מהלמידה. מתאים שאלות לפי תשובות.</p>
+        <!-- STEP 1 -->
+        <div class="step" style="--phase-grad: var(--phase-prep); --phase-color: var(--phase-prep-solid);">
+            <div class="step-top">
+                <div class="step-num">1</div>
+                <div class="step-head">
+                    <h2>מחקר מגמות לפי תחום</h2>
+                    <p>לפני פגישות איתור הצרכים — סריקה של מגמות בכל תחום עיסוק בארגון (משפט, פיתוח, מכירות, תפעול). מה קורה בשוק, מה מתחרים עושים, מה הרגולציה החדשה.</p>
+                </div>
+                <span class="phase-label">הכנה</span>
+            </div>
+            <div class="step-meta">
+                <div class="meta-block">
+                    <div class="meta-label">סוכן</div>
+                    <div class="chips">
+                        <span class="chip agent">סוכן חוקר מגמות (per domain)</span>
+                    </div>
+                </div>
+                <div class="meta-block">
+                    <div class="meta-label">סקילים</div>
+                    <div class="chips">
+                        <span class="chip">Web search</span>
+                        <span class="chip">Deep research</span>
+                        <span class="chip">Industry benchmarking</span>
+                    </div>
+                </div>
+            </div>
+            <div class="outputs">
+                <div class="outputs-header">
+                    <div class="outputs-icon">✓</div>
+                    <div class="outputs-title">תוצרים</div>
+                </div>
+                <ul class="outputs-list">
+                    <li><span><strong>דוח מגמות</strong>מסמך מפורט לכל תחום, 5–10 עמ׳</span></li>
+                    <li><span><strong>סיכום אקזקיוטיבי</strong>1-pager לכל תחום</span></li>
+                    <li><span><strong>מאגר מקורות</strong>לינקים מתויגים ומדורגים</span></li>
+                    <li><span><strong>היפותזות ראשוניות</strong>לבדיקה בראיונות</span></li>
+                </ul>
+            </div>
         </div>
-        <span class="phase-label">איסוף</span>
-      </div>
-      <div class="step-meta">
-        <div class="meta-block">
-          <div class="meta-label">🤖 סוכן</div>
-          <div class="chips">
-            <span class="chip agent">סוכן מראיין (Voice / Chat)</span>
-          </div>
+
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+
+        <!-- STEP 2 -->
+        <div class="step" style="--phase-grad: var(--phase-prep); --phase-color: var(--phase-prep-solid);">
+            <div class="step-top">
+                <div class="step-num">2</div>
+                <div class="step-head">
+                    <h2>ניתוח ביצועים ועמידה ביעדים</h2>
+                    <p>מיפוי השנה שעברה — באילו תוכניות עמדנו ביעדים, מה עבד, מה לא, ומה הלקחים. ניתוח KPI, סקרי שביעות רצון, ותוצאות עסקיות שיוחסו להדרכות.</p>
+                </div>
+                <span class="phase-label">הכנה</span>
+            </div>
+            <div class="step-meta">
+                <div class="meta-block">
+                    <div class="meta-label">סוכן</div>
+                    <div class="chips">
+                        <span class="chip agent">סוכן אנליסט ביצועים</span>
+                    </div>
+                </div>
+                <div class="meta-block">
+                    <div class="meta-label">סקילים</div>
+                    <div class="chips">
+                        <span class="chip">KPI analysis</span>
+                        <span class="chip">Lessons learned extraction</span>
+                        <span class="chip">ROI attribution</span>
+                    </div>
+                </div>
+            </div>
+            <div class="outputs">
+                <div class="outputs-header">
+                    <div class="outputs-icon">✓</div>
+                    <div class="outputs-title">תוצרים</div>
+                </div>
+                <ul class="outputs-list">
+                    <li><span><strong>דוח ביצועים</strong>מול יעדי השנה שעברה</span></li>
+                    <li><span><strong>מפת הצלחות וכישלונות</strong>תוכניות מסווגות</span></li>
+                    <li><span><strong>לקחים מסווגים</strong>Success patterns + Failure patterns</span></li>
+                    <li><span><strong>Benchmark פנימי</strong>בין יחידות בארגון</span></li>
+                </ul>
+            </div>
         </div>
-        <div class="meta-block">
-          <div class="meta-label">⚙️ סקילים</div>
-          <div class="chips">
-            <span class="chip skill">Adaptive questioning</span>
-            <span class="chip skill">Active listening + probing</span>
-            <span class="chip skill">Sentiment analysis</span>
-          </div>
+
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+
+        <!-- STEP 3 -->
+        <div class="step" style="--phase-grad: var(--phase-collect); --phase-color: var(--phase-collect-solid);">
+            <div class="step-top">
+                <div class="step-num">3</div>
+                <div class="step-head">
+                    <h2>תשאול איתור צרכים — שיחות עם מנהלים</h2>
+                    <p>סוכן שמבצע שיחות תחקור עם מנהלי צוותים, מנהלי מחלקות ועד דרג VP. מבין מהם האתגרים, מה צריך לקרות, ומה מצופה מהלמידה. מתאים שאלות לפי תשובות.</p>
+                </div>
+                <span class="phase-label">איסוף</span>
+            </div>
+            <div class="step-meta">
+                <div class="meta-block">
+                    <div class="meta-label">סוכן</div>
+                    <div class="chips">
+                        <span class="chip agent">סוכן מראיין (Voice / Chat)</span>
+                    </div>
+                </div>
+                <div class="meta-block">
+                    <div class="meta-label">סקילים</div>
+                    <div class="chips">
+                        <span class="chip">Adaptive questioning</span>
+                        <span class="chip">Active listening + probing</span>
+                        <span class="chip">Sentiment analysis</span>
+                    </div>
+                </div>
+            </div>
+            <div class="outputs">
+                <div class="outputs-header">
+                    <div class="outputs-icon">✓</div>
+                    <div class="outputs-title">תוצרים</div>
+                </div>
+                <ul class="outputs-list">
+                    <li><span><strong>תמלילי שיחות</strong>מלאים, ניתנים לחיפוש</span></li>
+                    <li><span><strong>סיכומי שיחה מובנים</strong>1 לכל מרואיין</span></li>
+                    <li><span><strong>מפת אתגרים</strong>לפי יחידה ולפי דרג</span></li>
+                    <li><span><strong>ציטוטים מפתח</strong>לשימוש בדשבורד</span></li>
+                    <li><span><strong>מפת תחושות</strong>רמת חיוב או שלילה לכל נושא</span></li>
+                </ul>
+            </div>
         </div>
-      </div>
-      <div class="outputs">
-        <div class="outputs-header">
-          <div class="outputs-icon">✓</div>
-          <div class="outputs-title">תוצרים</div>
+
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+
+        <!-- STEP 4 -->
+        <div class="step" style="--phase-grad: var(--phase-synth); --phase-color: var(--phase-synth-solid);">
+            <div class="step-top">
+                <div class="step-num">4</div>
+                <div class="step-head">
+                    <h2>דשבורד תובנות מרכזיות</h2>
+                    <p>חיבור של שלושת המקורות (מגמות, ביצועים, ראיונות) לתובנות מרכזיות. כל תובנה מגיעה עם הסבר, היפותזה, ומקורות התומכים בה. תצוגת דשבורד אינטראקטיבית.</p>
+                </div>
+                <span class="phase-label">סינתזה</span>
+            </div>
+            <div class="step-meta">
+                <div class="meta-block">
+                    <div class="meta-label">סוכן</div>
+                    <div class="chips">
+                        <span class="chip agent">סוכן סינתזה (Insight synthesizer)</span>
+                    </div>
+                </div>
+                <div class="meta-block">
+                    <div class="meta-label">סקילים</div>
+                    <div class="chips">
+                        <span class="chip">Cross-source pattern matching</span>
+                        <span class="chip">Hypothesis generation</span>
+                        <span class="chip">Dashboard generation</span>
+                    </div>
+                </div>
+            </div>
+            <div class="outputs">
+                <div class="outputs-header">
+                    <div class="outputs-icon">✓</div>
+                    <div class="outputs-title">תוצרים</div>
+                </div>
+                <ul class="outputs-list">
+                    <li><span><strong>דשבורד אינטראקטיבי</strong>תובנות מדורגות לפי חשיבות</span></li>
+                    <li><span><strong>היפותזות עם רמת ביטחון</strong>High / Medium / Low</span></li>
+                    <li><span><strong>מפת חיבורים</strong>מי תומך במה, איפה יש קונפליקטים</span></li>
+                    <li><span><strong>הסבר לכל תובנה</strong>מקור + רציונל</span></li>
+                </ul>
+            </div>
         </div>
-        <ul class="outputs-list">
-          <li><span><strong>תמלילי שיחות</strong> — מלאים, ניתנים לחיפוש</span></li>
-          <li><span><strong>סיכומי שיחה מובנים</strong> — 1 לכל מרואיין</span></li>
-          <li><span><strong>מפת כאבים</strong> — לפי יחידה ולפי דרג</span></li>
-          <li><span><strong>ציטוטים מפתח</strong> — לשימוש בדשבורד</span></li>
-          <li><span><strong>Sentiment heatmap</strong> — איפה הלהט ואיפה הקיפאון</span></li>
-        </ul>
-      </div>
+
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+
+        <!-- STEP 5 -->
+        <div class="step" style="--phase-grad: var(--phase-validate); --phase-color: var(--phase-validate-solid);">
+            <div class="step-top">
+                <div class="step-num">5</div>
+                <div class="step-head">
+                    <h2>עמוד נחיתה אישי לכל VP</h2>
+                    <p>כל VP מקבל לינק לעמוד נחיתה מותאם אישית עם התובנות הרלוונטיות אליו. הוא יכול לאשר, להעיר, להוסיף הקשר, ולסמן תעדוף.</p>
+                </div>
+                <span class="phase-label">תיקוף</span>
+            </div>
+            <div class="step-meta">
+                <div class="meta-block">
+                    <div class="meta-label">סוכן</div>
+                    <div class="chips">
+                        <span class="chip agent">סוכן בונה עמודי נחיתה אישיים</span>
+                    </div>
+                </div>
+                <div class="meta-block">
+                    <div class="meta-label">סקילים</div>
+                    <div class="chips">
+                        <span class="chip">Personalized landing page</span>
+                        <span class="chip">Form + feedback UX</span>
+                        <span class="chip">Magic link generation</span>
+                    </div>
+                </div>
+            </div>
+            <div class="outputs">
+                <div class="outputs-header">
+                    <div class="outputs-icon">✓</div>
+                    <div class="outputs-title">תוצרים</div>
+                </div>
+                <ul class="outputs-list">
+                    <li><span><strong>URL ייחודי לכל VP</strong>magic link מאובטח</span></li>
+                    <li><span><strong>תובנות מותאמות אישית</strong>לפי תחום ה-VP</span></li>
+                    <li><span><strong>טופס תיקוף ותוספות</strong>לכל תובנה</span></li>
+                    <li><span><strong>תזכורות אוטומטיות</strong>למי שלא הגיב</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+
+        <!-- STEP 6 -->
+        <div class="step" style="--phase-grad: var(--phase-validate); --phase-color: var(--phase-validate-solid);">
+            <div class="step-top">
+                <div class="step-num">6</div>
+                <div class="step-head">
+                    <h2>איסוף תוספות ואישורים</h2>
+                    <p>איסוף שיטתי של תגובות ה-VPs — אישורים, תיקונים, תוספות והערות. כל מענה משויך לתובנה המקורית, והתובנות מתעדכנות בהתאם.</p>
+                </div>
+                <span class="phase-label">תיקוף</span>
+            </div>
+            <div class="step-meta">
+                <div class="meta-block">
+                    <div class="meta-label">סוכן</div>
+                    <div class="chips">
+                        <span class="chip agent">סוכן איסוף ותיוג תגובות</span>
+                    </div>
+                </div>
+                <div class="meta-block">
+                    <div class="meta-label">סקילים</div>
+                    <div class="chips">
+                        <span class="chip">Response tracking</span>
+                        <span class="chip">Feedback normalization</span>
+                        <span class="chip">Conflict detection</span>
+                    </div>
+                </div>
+            </div>
+            <div class="outputs">
+                <div class="outputs-header">
+                    <div class="outputs-icon">✓</div>
+                    <div class="outputs-title">תוצרים</div>
+                </div>
+                <ul class="outputs-list">
+                    <li><span><strong>מאגר תגובות מתויג</strong>לפי VP, לפי תובנה</span></li>
+                    <li><span><strong>דוח השלמת מענה</strong>מי ענה, מי לא, מה התעדוף</span></li>
+                    <li><span><strong>תובנות מעודכנות</strong>גרסה V2 עם תיקונים</span></li>
+                    <li><span><strong>תובנות חדשות</strong>שעלו מתגובות ה-VPs</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+
+        <!-- STEP 7 -->
+        <div class="step" style="--phase-grad: var(--phase-final); --phase-color: var(--phase-final-solid);">
+            <div class="step-top">
+                <div class="step-num">7</div>
+                <div class="step-head">
+                    <h2>קונסולידציה — מגמות, הבדלים וייחודיות</h2>
+                    <p>מה חוזר על עצמו בכמה יחידות (מגמה רוחבית), מה ייחודי ליחידה אחת, ואיפה יש פערי תפיסה בין VPs. הבסיס לבניית תוכנית הלמידה השנתית.</p>
+                </div>
+                <span class="phase-label">סיכום</span>
+            </div>
+            <div class="step-meta">
+                <div class="meta-block">
+                    <div class="meta-label">סוכן</div>
+                    <div class="chips">
+                        <span class="chip agent">סוכן קונסולידציה</span>
+                    </div>
+                </div>
+                <div class="meta-block">
+                    <div class="meta-label">סקילים</div>
+                    <div class="chips">
+                        <span class="chip">Cross-unit clustering</span>
+                        <span class="chip">Gap & uniqueness analysis</span>
+                        <span class="chip">Prioritization (RICE / MoSCoW)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="outputs">
+                <div class="outputs-header">
+                    <div class="outputs-icon">✓</div>
+                    <div class="outputs-title">תוצרים</div>
+                </div>
+                <ul class="outputs-list">
+                    <li><span><strong>מסמך מסכם</strong>צרכי הלמידה לשנה הקרובה</span></li>
+                    <li><span><strong>מפת צרכים שנתית</strong>לפי יחידה, תחום, ודחיפות</span></li>
+                    <li><span><strong>מגמות רוחביות</strong>נושאים שחוזרים בכמה יחידות</span></li>
+                    <li><span><strong>צרכים ייחודיים</strong>מה דורש פתרון מקומי</span></li>
+                    <li><span><strong>תעדוף ראשוני</strong>בסיס לתוכנית למידה שנתית</span></li>
+                </ul>
+            </div>
+        </div>
+
     </div>
 
-    <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
-
-    <!-- STEP 4 -->
-    <div class="step" style="--phase-color: var(--phase-synth); --phase-color-2: #6d28d9;">
-      <div class="step-top">
-        <div class="step-num">4</div>
-        <div class="step-head">
-          <h2>דשבורד תובנות מרכזיות</h2>
-          <p>חיבור של שלושת המקורות (מגמות, ביצועים, ראיונות) לתובנות מרכזיות. כל תובנה מגיעה עם הסבר, היפותזה, ומקורות התומכים בה. תצוגת דשבורד אינטראקטיבית.</p>
-        </div>
-        <span class="phase-label">סינתזה</span>
-      </div>
-      <div class="step-meta">
-        <div class="meta-block">
-          <div class="meta-label">🤖 סוכן</div>
-          <div class="chips">
-            <span class="chip agent">סוכן סינתזה (Insight synthesizer)</span>
-          </div>
-        </div>
-        <div class="meta-block">
-          <div class="meta-label">⚙️ סקילים</div>
-          <div class="chips">
-            <span class="chip skill">Cross-source pattern matching</span>
-            <span class="chip skill">Hypothesis generation</span>
-            <span class="chip skill">Dashboard generation</span>
-          </div>
-        </div>
-      </div>
-      <div class="outputs">
-        <div class="outputs-header">
-          <div class="outputs-icon">✓</div>
-          <div class="outputs-title">תוצרים</div>
-        </div>
-        <ul class="outputs-list">
-          <li><span><strong>דשבורד אינטראקטיבי</strong> — תובנות מדורגות לפי חשיבות</span></li>
-          <li><span><strong>היפותזות עם רמת ביטחון</strong> — High / Medium / Low</span></li>
-          <li><span><strong>מפת חיבורים</strong> — מי תומך במה, איפה יש קונפליקטים</span></li>
-          <li><span><strong>הסבר לכל תובנה</strong> — מקור + רציונל</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
-
-    <!-- STEP 5 -->
-    <div class="step" style="--phase-color: var(--phase-validate); --phase-color-2: #be185d;">
-      <div class="step-top">
-        <div class="step-num">5</div>
-        <div class="step-head">
-          <h2>עמוד נחיתה אישי לכל VP</h2>
-          <p>כל VP מקבל לינק לעמוד נחיתה מותאם אישית עם התובנות הרלוונטיות אליו. הוא יכול לאשר, להעיר, להוסיף הקשר, ולסמן תעדוף.</p>
-        </div>
-        <span class="phase-label">תיקוף</span>
-      </div>
-      <div class="step-meta">
-        <div class="meta-block">
-          <div class="meta-label">🤖 סוכן</div>
-          <div class="chips">
-            <span class="chip agent">סוכן בונה עמודי נחיתה אישיים</span>
-          </div>
-        </div>
-        <div class="meta-block">
-          <div class="meta-label">⚙️ סקילים</div>
-          <div class="chips">
-            <span class="chip skill">Personalized landing page</span>
-            <span class="chip skill">Form + feedback UX</span>
-            <span class="chip skill">Magic link generation</span>
-          </div>
-        </div>
-      </div>
-      <div class="outputs">
-        <div class="outputs-header">
-          <div class="outputs-icon">✓</div>
-          <div class="outputs-title">תוצרים</div>
-        </div>
-        <ul class="outputs-list">
-          <li><span><strong>URL ייחודי לכל VP</strong> — magic link מאובטח</span></li>
-          <li><span><strong>תובנות מותאמות אישית</strong> — לפי תחום ה-VP</span></li>
-          <li><span><strong>טופס תיקוף ותוספות</strong> — לכל תובנה</span></li>
-          <li><span><strong>תזכורות אוטומטיות</strong> — למי שלא הגיב</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
-
-    <!-- STEP 6 -->
-    <div class="step" style="--phase-color: var(--phase-validate); --phase-color-2: #be185d;">
-      <div class="step-top">
-        <div class="step-num">6</div>
-        <div class="step-head">
-          <h2>איסוף תוספות ואישורים</h2>
-          <p>איסוף שיטתי של תגובות ה-VPs — אישורים, תיקונים, תוספות והערות. כל מענה משויך לתובנה המקורית, והתובנות מתעדכנות בהתאם.</p>
-        </div>
-        <span class="phase-label">תיקוף</span>
-      </div>
-      <div class="step-meta">
-        <div class="meta-block">
-          <div class="meta-label">🤖 סוכן</div>
-          <div class="chips">
-            <span class="chip agent">סוכן איסוף ותיוג תגובות</span>
-          </div>
-        </div>
-        <div class="meta-block">
-          <div class="meta-label">⚙️ סקילים</div>
-          <div class="chips">
-            <span class="chip skill">Response tracking</span>
-            <span class="chip skill">Feedback normalization</span>
-            <span class="chip skill">Conflict detection</span>
-          </div>
-        </div>
-      </div>
-      <div class="outputs">
-        <div class="outputs-header">
-          <div class="outputs-icon">✓</div>
-          <div class="outputs-title">תוצרים</div>
-        </div>
-        <ul class="outputs-list">
-          <li><span><strong>מאגר תגובות מתויג</strong> — לפי VP, לפי תובנה</span></li>
-          <li><span><strong>דוח השלמת מענה</strong> — מי ענה, מי לא, מה התעדוף</span></li>
-          <li><span><strong>תובנות מעודכנות</strong> — גרסה V2 עם תיקונים</span></li>
-          <li><span><strong>תובנות חדשות</strong> — שצצו מהמענה של ה-VPs</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
-
-    <!-- STEP 7 -->
-    <div class="step" style="--phase-color: var(--phase-final); --phase-color-2: #047857;">
-      <div class="step-top">
-        <div class="step-num">7</div>
-        <div class="step-head">
-          <h2>קונסולידציה — מגמות, הבדלים וייחודיות</h2>
-          <p>מה חוזר על עצמו בכמה יחידות (מגמה רוחבית), מה ייחודי ליחידה אחת, ואיפה יש פערי תפיסה בין VPs. הבסיס לבניית תוכנית הלמידה השנתית.</p>
-        </div>
-        <span class="phase-label">סיכום</span>
-      </div>
-      <div class="step-meta">
-        <div class="meta-block">
-          <div class="meta-label">🤖 סוכן</div>
-          <div class="chips">
-            <span class="chip agent">סוכן קונסולידציה</span>
-          </div>
-        </div>
-        <div class="meta-block">
-          <div class="meta-label">⚙️ סקילים</div>
-          <div class="chips">
-            <span class="chip skill">Cross-unit clustering</span>
-            <span class="chip skill">Gap & uniqueness analysis</span>
-            <span class="chip skill">Prioritization (RICE / MoSCoW)</span>
-          </div>
-        </div>
-      </div>
-      <div class="outputs">
-        <div class="outputs-header">
-          <div class="outputs-icon">✓</div>
-          <div class="outputs-title">תוצרים</div>
-        </div>
-        <ul class="outputs-list">
-          <li><span><strong>מסמך מסכם</strong> — צרכי הלמידה לשנה הקרובה</span></li>
-          <li><span><strong>מפת צרכים שנתית</strong> — לפי יחידה, לפי תחום, לפי דחיפות</span></li>
-          <li><span><strong>מגמות רוחביות</strong> — נושאים שחוזרים על עצמם בכמה יחידות</span></li>
-          <li><span><strong>צרכים ייחודיים</strong> — מה דורש פתרון מקומי</span></li>
-          <li><span><strong>תעדוף ראשוני</strong> — בסיס לבניית תוכנית למידה שנתית</span></li>
-        </ul>
-      </div>
-    </div>
-
-  </div>
-
-  <footer>
-    <strong>תהליך ניתוח צרכים שנתי</strong> · AI-First L&D Platform
-  </footer>
+    <footer>
+        <strong>תהליך ניתוח צרכים שנתי</strong> · AI-First L&D Platform
+    </footer>
 
 </div>
 </body>
