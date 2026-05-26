@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>תהליך ניתוח צרכים שנתי | AI-First L&D</title>
+    <title data-he="תהליך ניתוח צרכים שנתי | AI-First L&D" data-en="Annual Needs Analysis Process | AI-First L&D">תהליך ניתוח צרכים שנתי | AI-First L&D</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         /* ===== DESIGN TOKENS (matches deck) ===== */
@@ -22,21 +22,12 @@
             --border: rgba(255,255,255,0.12);
             --border-soft: rgba(255,255,255,0.06);
 
-            /* Monochrome — all phases share the same neutral palette */
-            --phase-prep: #FFFFFF;
-            --phase-collect: #FFFFFF;
-            --phase-synth: #FFFFFF;
-            --phase-validate: #FFFFFF;
-            --phase-final: #FFFFFF;
-
-            --phase-prep-solid: rgba(255,255,255,0.85);
-            --phase-collect-solid: rgba(255,255,255,0.85);
-            --phase-synth-solid: rgba(255,255,255,0.85);
-            --phase-validate-solid: rgba(255,255,255,0.85);
-            --phase-final-solid: rgba(255,255,255,0.85);
-
-            --font: 'Noto Sans Hebrew', sans-serif;
+            --font-he: 'Noto Sans Hebrew', sans-serif;
+            --font-en: 'Inter', sans-serif;
+            --font: var(--font-he);
         }
+
+        html[dir="ltr"] { --font: var(--font-en); }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -48,6 +39,8 @@
             min-height: 100vh;
             position: relative;
         }
+
+        html[dir="ltr"] body { line-height: 1.6; }
 
         /* Dot grid background — same as deck */
         body::before {
@@ -66,6 +59,42 @@
             max-width: 1100px;
             margin: 0 auto;
             padding: 80px 64px 100px;
+        }
+
+        /* ===== LANGUAGE TOGGLE ===== */
+        .lang-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 100;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 9px 18px;
+            color: var(--text-primary);
+            font-family: var(--font);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .lang-toggle:hover {
+            background: #1a1a1a;
+            border-color: var(--text-tertiary);
+        }
+
+        .lang-toggle svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         /* ===== HEADER ===== */
@@ -136,6 +165,7 @@
             width: 10px;
             height: 10px;
             border-radius: 50%;
+            background: rgba(255,255,255,0.85);
         }
 
         .phase-sep {
@@ -228,7 +258,6 @@
         .step:nth-of-type(6) { animation-delay: 0.85s; }
         .step:nth-of-type(7) { animation-delay: 0.95s; }
 
-        /* Top section: number + title + phase */
         .step-top {
             padding: 28px 32px 22px;
             display: grid;
@@ -287,7 +316,7 @@
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background: var(--phase-color, #fff);
+            background: rgba(255,255,255,0.85);
         }
 
         /* Meta row: agent + skills */
@@ -482,7 +511,8 @@
         }
 
         @media (max-width: 768px) {
-            .container { padding: 40px 16px 60px; }
+            .container { padding: 72px 16px 60px; }
+            .lang-toggle { top: 14px; right: 14px; padding: 7px 14px; font-size: 12px; }
             h1 { font-size: 28px; }
             .subtitle { font-size: 15px; }
             .step-top {
@@ -516,25 +546,33 @@
     </style>
 </head>
 <body>
+
+<button class="lang-toggle" type="button" onclick="toggleLanguage()" aria-label="Toggle language">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    <span class="lang-toggle-label">EN</span>
+</button>
+
 <div class="container">
 
     <header>
         <span class="eyebrow">AI-First L&D</span>
-        <h1>תהליך ניתוח צרכים שנתי</h1>
-        <p class="subtitle">מאיתור עד קונסולידציה — מי עושה מה, אילו סקילים נדרשים, ואילו תוצרים יוצאים מכל שלב</p>
+        <h1 data-he="תהליך ניתוח צרכים שנתי" data-en="Annual Needs Analysis Process">תהליך ניתוח צרכים שנתי</h1>
+        <p class="subtitle"
+           data-he="מאיתור עד קונסולידציה — מי עושה מה, אילו סקילים נדרשים, ואילו תוצרים יוצאים מכל שלב"
+           data-en="From discovery to consolidation — who does what, which skills are needed, and what deliverables come out of each stage">מאיתור עד קונסולידציה — מי עושה מה, אילו סקילים נדרשים, ואילו תוצרים יוצאים מכל שלב</p>
     </header>
 
     <!-- Phase tracker -->
     <div class="phase-tracker">
-        <div class="phase-pill"><span class="dot" style="background: var(--phase-prep-solid)"></span>הכנה</div>
-        <span class="phase-sep">←</span>
-        <div class="phase-pill"><span class="dot" style="background: var(--phase-collect-solid)"></span>איסוף</div>
-        <span class="phase-sep">←</span>
-        <div class="phase-pill"><span class="dot" style="background: var(--phase-synth-solid)"></span>סינתזה</div>
-        <span class="phase-sep">←</span>
-        <div class="phase-pill"><span class="dot" style="background: var(--phase-validate-solid)"></span>תיקוף</div>
-        <span class="phase-sep">←</span>
-        <div class="phase-pill"><span class="dot" style="background: var(--phase-final-solid)"></span>סיכום</div>
+        <div class="phase-pill"><span class="dot"></span><span data-he="הכנה" data-en="Preparation">הכנה</span></div>
+        <span class="phase-sep" data-he="←" data-en="→">←</span>
+        <div class="phase-pill"><span class="dot"></span><span data-he="איסוף" data-en="Discovery">איסוף</span></div>
+        <span class="phase-sep" data-he="←" data-en="→">←</span>
+        <div class="phase-pill"><span class="dot"></span><span data-he="סינתזה" data-en="Synthesis">סינתזה</span></div>
+        <span class="phase-sep" data-he="←" data-en="→">←</span>
+        <div class="phase-pill"><span class="dot"></span><span data-he="תיקוף" data-en="Validation">תיקוף</span></div>
+        <span class="phase-sep" data-he="←" data-en="→">←</span>
+        <div class="phase-pill"><span class="dot"></span><span data-he="סיכום" data-en="Consolidation">סיכום</span></div>
     </div>
 
     <!-- Legend -->
@@ -543,48 +581,49 @@
             <span class="legend-icon">
                 <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
             </span>
-            <span>סוכן AI</span>
+            <span data-he="סוכן AI" data-en="AI Agent">סוכן AI</span>
         </div>
         <div class="legend-item">
             <span class="legend-icon">
                 <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
             </span>
-            <span>סקיל / יכולת</span>
+            <span data-he="סקיל / יכולת" data-en="Skill / Capability">סקיל / יכולת</span>
         </div>
         <div class="legend-item">
             <span class="legend-icon">
                 <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
             </span>
-            <span>תוצרים</span>
+            <span data-he="תוצרים" data-en="Deliverables">תוצרים</span>
         </div>
     </div>
 
     <div class="flow">
 
         <!-- STEP 1 -->
-        <div class="step" style="--phase-grad: var(--phase-prep); --phase-color: var(--phase-prep-solid);">
+        <div class="step">
             <div class="step-top">
                 <div class="step-num">1</div>
                 <div class="step-head">
-                    <h2>מחקר מגמות לפי תחום</h2>
-                    <p>לפני פגישות איתור הצרכים — סריקה של מגמות בכל תחום עיסוק בארגון (משפט, פיתוח, מכירות, תפעול). מה קורה בשוק, מה מתחרים עושים, מה הרגולציה החדשה.</p>
+                    <h2 data-he="מחקר מגמות לפי תחום" data-en="Trend Research per Domain">מחקר מגמות לפי תחום</h2>
+                    <p data-he="לפני פגישות איתור הצרכים — סריקה של מגמות בכל תחום עיסוק בארגון (משפט, פיתוח, מכירות, תפעול). מה קורה בשוק, מה מתחרים עושים, מה הרגולציה החדשה."
+                       data-en="Before needs discovery meetings — scanning trends in every organizational domain (legal, R&D, sales, operations). What's happening in the market, what competitors are doing, what new regulations apply.">לפני פגישות איתור הצרכים — סריקה של מגמות בכל תחום עיסוק בארגון (משפט, פיתוח, מכירות, תפעול). מה קורה בשוק, מה מתחרים עושים, מה הרגולציה החדשה.</p>
                 </div>
-                <span class="phase-label">הכנה</span>
+                <span class="phase-label" data-he="הכנה" data-en="Preparation">הכנה</span>
             </div>
             <div class="step-meta">
                 <div class="meta-block">
                     <div class="meta-label">
                         <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
-                        סוכן
+                        <span data-he="סוכן" data-en="Agent">סוכן</span>
                     </div>
                     <div class="chips">
-                        <span class="chip agent">סוכן חוקר מגמות (per domain)</span>
+                        <span class="chip agent" data-he="סוכן חוקר מגמות (per domain)" data-en="Trend research agent (per domain)">סוכן חוקר מגמות (per domain)</span>
                     </div>
                 </div>
                 <div class="meta-block">
                     <div class="meta-label">
                         <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                        סקילים
+                        <span data-he="סקילים" data-en="Skills">סקילים</span>
                     </div>
                     <div class="chips">
                         <span class="chip">Web search</span>
@@ -595,16 +634,14 @@
             </div>
             <div class="outputs">
                 <div class="outputs-header">
-                    <div class="outputs-icon">
-                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <div class="outputs-title">תוצרים</div>
+                    <div class="outputs-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                    <div class="outputs-title" data-he="תוצרים" data-en="Deliverables">תוצרים</div>
                 </div>
                 <ul class="outputs-list">
-                    <li><span><strong>דוח מגמות</strong>מסמך מפורט לכל תחום, 5–10 עמ׳</span></li>
-                    <li><span><strong>סיכום אקזקיוטיבי</strong>1-pager לכל תחום</span></li>
-                    <li><span><strong>מאגר מקורות</strong>לינקים מתויגים ומדורגים</span></li>
-                    <li><span><strong>היפותזות ראשוניות</strong>לבדיקה בראיונות</span></li>
+                    <li><span><strong data-he="דוח מגמות" data-en="Trend report">דוח מגמות</strong><span data-he="מסמך מפורט לכל תחום, 5–10 עמ׳" data-en="Detailed document per domain, 5–10 pages">מסמך מפורט לכל תחום, 5–10 עמ׳</span></span></li>
+                    <li><span><strong data-he="סיכום אקזקיוטיבי" data-en="Executive summary">סיכום אקזקיוטיבי</strong><span data-he="1-pager לכל תחום" data-en="1-pager per domain">1-pager לכל תחום</span></span></li>
+                    <li><span><strong data-he="מאגר מקורות" data-en="Source library">מאגר מקורות</strong><span data-he="לינקים מתויגים ומדורגים" data-en="Tagged and ranked links">לינקים מתויגים ומדורגים</span></span></li>
+                    <li><span><strong data-he="היפותזות ראשוניות" data-en="Initial hypotheses">היפותזות ראשוניות</strong><span data-he="לבדיקה בראיונות" data-en="To validate in interviews">לבדיקה בראיונות</span></span></li>
                 </ul>
             </div>
         </div>
@@ -612,29 +649,30 @@
         <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
 
         <!-- STEP 2 -->
-        <div class="step" style="--phase-grad: var(--phase-prep); --phase-color: var(--phase-prep-solid);">
+        <div class="step">
             <div class="step-top">
                 <div class="step-num">2</div>
                 <div class="step-head">
-                    <h2>ניתוח ביצועים ועמידה ביעדים</h2>
-                    <p>מיפוי השנה שעברה — באילו תוכניות עמדנו ביעדים, מה עבד, מה לא, ומה הלקחים. ניתוח KPI, סקרי שביעות רצון, ותוצאות עסקיות שיוחסו להדרכות.</p>
+                    <h2 data-he="ניתוח ביצועים ועמידה ביעדים" data-en="Performance & Goal Attainment Analysis">ניתוח ביצועים ועמידה ביעדים</h2>
+                    <p data-he="מיפוי השנה שעברה — באילו תוכניות עמדנו ביעדים, מה עבד, מה לא, ומה הלקחים. ניתוח KPI, סקרי שביעות רצון, ותוצאות עסקיות שיוחסו להדרכות."
+                       data-en="Mapping the past year — which programs met their targets, what worked, what didn't, and the lessons learned. KPI analysis, satisfaction surveys, and business outcomes attributed to training.">מיפוי השנה שעברה — באילו תוכניות עמדנו ביעדים, מה עבד, מה לא, ומה הלקחים. ניתוח KPI, סקרי שביעות רצון, ותוצאות עסקיות שיוחסו להדרכות.</p>
                 </div>
-                <span class="phase-label">הכנה</span>
+                <span class="phase-label" data-he="הכנה" data-en="Preparation">הכנה</span>
             </div>
             <div class="step-meta">
                 <div class="meta-block">
                     <div class="meta-label">
                         <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
-                        סוכן
+                        <span data-he="סוכן" data-en="Agent">סוכן</span>
                     </div>
                     <div class="chips">
-                        <span class="chip agent">סוכן אנליסט ביצועים</span>
+                        <span class="chip agent" data-he="סוכן אנליסט ביצועים" data-en="Performance analyst agent">סוכן אנליסט ביצועים</span>
                     </div>
                 </div>
                 <div class="meta-block">
                     <div class="meta-label">
                         <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                        סקילים
+                        <span data-he="סקילים" data-en="Skills">סקילים</span>
                     </div>
                     <div class="chips">
                         <span class="chip">KPI analysis</span>
@@ -645,16 +683,14 @@
             </div>
             <div class="outputs">
                 <div class="outputs-header">
-                    <div class="outputs-icon">
-                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <div class="outputs-title">תוצרים</div>
+                    <div class="outputs-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                    <div class="outputs-title" data-he="תוצרים" data-en="Deliverables">תוצרים</div>
                 </div>
                 <ul class="outputs-list">
-                    <li><span><strong>דוח ביצועים</strong>מול יעדי השנה שעברה</span></li>
-                    <li><span><strong>מפת הצלחות וכישלונות</strong>תוכניות מסווגות</span></li>
-                    <li><span><strong>לקחים מסווגים</strong>Success patterns + Failure patterns</span></li>
-                    <li><span><strong>Benchmark פנימי</strong>בין יחידות בארגון</span></li>
+                    <li><span><strong data-he="דוח ביצועים" data-en="Performance report">דוח ביצועים</strong><span data-he="מול יעדי השנה שעברה" data-en="Against last year's targets">מול יעדי השנה שעברה</span></span></li>
+                    <li><span><strong data-he="מפת הצלחות וכישלונות" data-en="Wins &amp; losses map">מפת הצלחות וכישלונות</strong><span data-he="תוכניות מסווגות" data-en="Programs classified">תוכניות מסווגות</span></span></li>
+                    <li><span><strong data-he="לקחים מסווגים" data-en="Classified lessons">לקחים מסווגים</strong><span data-he="Success patterns + Failure patterns" data-en="Success patterns + Failure patterns">Success patterns + Failure patterns</span></span></li>
+                    <li><span><strong data-he="Benchmark פנימי" data-en="Internal benchmark">Benchmark פנימי</strong><span data-he="בין יחידות בארגון" data-en="Across organizational units">בין יחידות בארגון</span></span></li>
                 </ul>
             </div>
         </div>
@@ -662,29 +698,30 @@
         <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
 
         <!-- STEP 3 -->
-        <div class="step" style="--phase-grad: var(--phase-collect); --phase-color: var(--phase-collect-solid);">
+        <div class="step">
             <div class="step-top">
                 <div class="step-num">3</div>
                 <div class="step-head">
-                    <h2>תשאול איתור צרכים — שיחות עם מנהלים</h2>
-                    <p>סוכן שמבצע שיחות תחקור עם מנהלי צוותים, מנהלי מחלקות ועד דרג VP. מבין מהם האתגרים, מה צריך לקרות, ומה מצופה מהלמידה. מתאים שאלות לפי תשובות.</p>
+                    <h2 data-he="תשאול איתור צרכים — שיחות עם מנהלים" data-en="Needs Discovery Interviews — Conversations with Managers">תשאול איתור צרכים — שיחות עם מנהלים</h2>
+                    <p data-he="סוכן שמבצע שיחות תחקור עם מנהלי צוותים, מנהלי מחלקות ועד דרג VP. מבין מהם האתגרים, מה צריך לקרות, ומה מצופה מהלמידה. מתאים שאלות לפי תשובות."
+                       data-en="An agent that conducts probing conversations with team leads, department managers, and up to VP level. Understands the challenges, what needs to happen, and what's expected from learning. Adapts questions based on answers.">סוכן שמבצע שיחות תחקור עם מנהלי צוותים, מנהלי מחלקות ועד דרג VP. מבין מהם האתגרים, מה צריך לקרות, ומה מצופה מהלמידה. מתאים שאלות לפי תשובות.</p>
                 </div>
-                <span class="phase-label">איסוף</span>
+                <span class="phase-label" data-he="איסוף" data-en="Discovery">איסוף</span>
             </div>
             <div class="step-meta">
                 <div class="meta-block">
                     <div class="meta-label">
                         <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
-                        סוכן
+                        <span data-he="סוכן" data-en="Agent">סוכן</span>
                     </div>
                     <div class="chips">
-                        <span class="chip agent">סוכן מראיין (Voice / Chat)</span>
+                        <span class="chip agent" data-he="סוכן מראיין (Voice / Chat)" data-en="Interviewer agent (Voice / Chat)">סוכן מראיין (Voice / Chat)</span>
                     </div>
                 </div>
                 <div class="meta-block">
                     <div class="meta-label">
                         <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                        סקילים
+                        <span data-he="סקילים" data-en="Skills">סקילים</span>
                     </div>
                     <div class="chips">
                         <span class="chip">Adaptive questioning</span>
@@ -695,17 +732,15 @@
             </div>
             <div class="outputs">
                 <div class="outputs-header">
-                    <div class="outputs-icon">
-                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <div class="outputs-title">תוצרים</div>
+                    <div class="outputs-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                    <div class="outputs-title" data-he="תוצרים" data-en="Deliverables">תוצרים</div>
                 </div>
                 <ul class="outputs-list">
-                    <li><span><strong>תמלילי שיחות</strong>מלאים, ניתנים לחיפוש</span></li>
-                    <li><span><strong>סיכומי שיחה מובנים</strong>1 לכל מרואיין</span></li>
-                    <li><span><strong>מפת אתגרים</strong>לפי יחידה ולפי דרג</span></li>
-                    <li><span><strong>ציטוטים מפתח</strong>לשימוש בדשבורד</span></li>
-                    <li><span><strong>מפת תחושות</strong>רמת חיוב או שלילה לכל נושא</span></li>
+                    <li><span><strong data-he="תמלילי שיחות" data-en="Conversation transcripts">תמלילי שיחות</strong><span data-he="מלאים, ניתנים לחיפוש" data-en="Full, searchable">מלאים, ניתנים לחיפוש</span></span></li>
+                    <li><span><strong data-he="סיכומי שיחה מובנים" data-en="Structured interview summaries">סיכומי שיחה מובנים</strong><span data-he="1 לכל מרואיין" data-en="One per interviewee">1 לכל מרואיין</span></span></li>
+                    <li><span><strong data-he="מפת אתגרים" data-en="Challenges map">מפת אתגרים</strong><span data-he="לפי יחידה ולפי דרג" data-en="By unit and by level">לפי יחידה ולפי דרג</span></span></li>
+                    <li><span><strong data-he="ציטוטים מפתח" data-en="Key quotes">ציטוטים מפתח</strong><span data-he="לשימוש בדשבורד" data-en="For use in dashboard">לשימוש בדשבורד</span></span></li>
+                    <li><span><strong data-he="מפת תחושות" data-en="Sentiment map">מפת תחושות</strong><span data-he="רמת חיוב או שלילה לכל נושא" data-en="Positive/negative level per topic">רמת חיוב או שלילה לכל נושא</span></span></li>
                 </ul>
             </div>
         </div>
@@ -713,29 +748,30 @@
         <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
 
         <!-- STEP 4 -->
-        <div class="step" style="--phase-grad: var(--phase-synth); --phase-color: var(--phase-synth-solid);">
+        <div class="step">
             <div class="step-top">
                 <div class="step-num">4</div>
                 <div class="step-head">
-                    <h2>דשבורד תובנות מרכזיות</h2>
-                    <p>חיבור של שלושת המקורות (מגמות, ביצועים, ראיונות) לתובנות מרכזיות. כל תובנה מגיעה עם הסבר, היפותזה, ומקורות התומכים בה. תצוגת דשבורד אינטראקטיבית.</p>
+                    <h2 data-he="דשבורד תובנות מרכזיות" data-en="Key Insights Dashboard">דשבורד תובנות מרכזיות</h2>
+                    <p data-he="חיבור של שלושת המקורות (מגמות, ביצועים, ראיונות) לתובנות מרכזיות. כל תובנה מגיעה עם הסבר, היפותזה, ומקורות התומכים בה. תצוגת דשבורד אינטראקטיבית."
+                       data-en="Connecting the three sources (trends, performance, interviews) into key insights. Each insight comes with an explanation, a hypothesis, and the sources supporting it. Interactive dashboard view.">חיבור של שלושת המקורות (מגמות, ביצועים, ראיונות) לתובנות מרכזיות. כל תובנה מגיעה עם הסבר, היפותזה, ומקורות התומכים בה. תצוגת דשבורד אינטראקטיבית.</p>
                 </div>
-                <span class="phase-label">סינתזה</span>
+                <span class="phase-label" data-he="סינתזה" data-en="Synthesis">סינתזה</span>
             </div>
             <div class="step-meta">
                 <div class="meta-block">
                     <div class="meta-label">
                         <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
-                        סוכן
+                        <span data-he="סוכן" data-en="Agent">סוכן</span>
                     </div>
                     <div class="chips">
-                        <span class="chip agent">סוכן סינתזה (Insight synthesizer)</span>
+                        <span class="chip agent" data-he="סוכן סינתזה (Insight synthesizer)" data-en="Synthesis agent (Insight synthesizer)">סוכן סינתזה (Insight synthesizer)</span>
                     </div>
                 </div>
                 <div class="meta-block">
                     <div class="meta-label">
                         <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                        סקילים
+                        <span data-he="סקילים" data-en="Skills">סקילים</span>
                     </div>
                     <div class="chips">
                         <span class="chip">Cross-source pattern matching</span>
@@ -746,16 +782,14 @@
             </div>
             <div class="outputs">
                 <div class="outputs-header">
-                    <div class="outputs-icon">
-                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <div class="outputs-title">תוצרים</div>
+                    <div class="outputs-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                    <div class="outputs-title" data-he="תוצרים" data-en="Deliverables">תוצרים</div>
                 </div>
                 <ul class="outputs-list">
-                    <li><span><strong>דשבורד אינטראקטיבי</strong>תובנות מדורגות לפי חשיבות</span></li>
-                    <li><span><strong>היפותזות עם רמת ביטחון</strong>High / Medium / Low</span></li>
-                    <li><span><strong>מפת חיבורים</strong>מי תומך במה, איפה יש קונפליקטים</span></li>
-                    <li><span><strong>הסבר לכל תובנה</strong>מקור + רציונל</span></li>
+                    <li><span><strong data-he="דשבורד אינטראקטיבי" data-en="Interactive dashboard">דשבורד אינטראקטיבי</strong><span data-he="תובנות מדורגות לפי חשיבות" data-en="Insights ranked by importance">תובנות מדורגות לפי חשיבות</span></span></li>
+                    <li><span><strong data-he="היפותזות עם רמת ביטחון" data-en="Hypotheses with confidence level">היפותזות עם רמת ביטחון</strong><span data-he="High / Medium / Low" data-en="High / Medium / Low">High / Medium / Low</span></span></li>
+                    <li><span><strong data-he="מפת חיבורים" data-en="Connection map">מפת חיבורים</strong><span data-he="מי תומך במה, איפה יש קונפליקטים" data-en="Who supports what, where conflicts arise">מי תומך במה, איפה יש קונפליקטים</span></span></li>
+                    <li><span><strong data-he="הסבר לכל תובנה" data-en="Explanation per insight">הסבר לכל תובנה</strong><span data-he="מקור + רציונל" data-en="Source + rationale">מקור + רציונל</span></span></li>
                 </ul>
             </div>
         </div>
@@ -763,29 +797,30 @@
         <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
 
         <!-- STEP 5 -->
-        <div class="step" style="--phase-grad: var(--phase-validate); --phase-color: var(--phase-validate-solid);">
+        <div class="step">
             <div class="step-top">
                 <div class="step-num">5</div>
                 <div class="step-head">
-                    <h2>עמוד נחיתה אישי לכל VP</h2>
-                    <p>כל VP מקבל לינק לעמוד נחיתה מותאם אישית עם התובנות הרלוונטיות אליו. הוא יכול לאשר, להעיר, להוסיף הקשר, ולסמן תעדוף.</p>
+                    <h2 data-he="עמוד נחיתה אישי לכל VP" data-en="Personal Landing Page for Each VP">עמוד נחיתה אישי לכל VP</h2>
+                    <p data-he="כל VP מקבל לינק לעמוד נחיתה מותאם אישית עם התובנות הרלוונטיות אליו. הוא יכול לאשר, להעיר, להוסיף הקשר, ולסמן תעדוף."
+                       data-en="Each VP gets a link to a personalized landing page with the insights relevant to them. They can approve, comment, add context, and flag prioritization.">כל VP מקבל לינק לעמוד נחיתה מותאם אישית עם התובנות הרלוונטיות אליו. הוא יכול לאשר, להעיר, להוסיף הקשר, ולסמן תעדוף.</p>
                 </div>
-                <span class="phase-label">תיקוף</span>
+                <span class="phase-label" data-he="תיקוף" data-en="Validation">תיקוף</span>
             </div>
             <div class="step-meta">
                 <div class="meta-block">
                     <div class="meta-label">
                         <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
-                        סוכן
+                        <span data-he="סוכן" data-en="Agent">סוכן</span>
                     </div>
                     <div class="chips">
-                        <span class="chip agent">סוכן בונה עמודי נחיתה אישיים</span>
+                        <span class="chip agent" data-he="סוכן בונה עמודי נחיתה אישיים" data-en="Personal landing page builder agent">סוכן בונה עמודי נחיתה אישיים</span>
                     </div>
                 </div>
                 <div class="meta-block">
                     <div class="meta-label">
                         <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                        סקילים
+                        <span data-he="סקילים" data-en="Skills">סקילים</span>
                     </div>
                     <div class="chips">
                         <span class="chip">Personalized landing page</span>
@@ -796,16 +831,14 @@
             </div>
             <div class="outputs">
                 <div class="outputs-header">
-                    <div class="outputs-icon">
-                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <div class="outputs-title">תוצרים</div>
+                    <div class="outputs-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                    <div class="outputs-title" data-he="תוצרים" data-en="Deliverables">תוצרים</div>
                 </div>
                 <ul class="outputs-list">
-                    <li><span><strong>URL ייחודי לכל VP</strong>magic link מאובטח</span></li>
-                    <li><span><strong>תובנות מותאמות אישית</strong>לפי תחום ה-VP</span></li>
-                    <li><span><strong>טופס תיקוף ותוספות</strong>לכל תובנה</span></li>
-                    <li><span><strong>תזכורות אוטומטיות</strong>למי שלא הגיב</span></li>
+                    <li><span><strong data-he="URL ייחודי לכל VP" data-en="Unique URL per VP">URL ייחודי לכל VP</strong><span data-he="magic link מאובטח" data-en="Secure magic link">magic link מאובטח</span></span></li>
+                    <li><span><strong data-he="תובנות מותאמות אישית" data-en="Personalized insights">תובנות מותאמות אישית</strong><span data-he="לפי תחום ה-VP" data-en="By VP's domain">לפי תחום ה-VP</span></span></li>
+                    <li><span><strong data-he="טופס תיקוף ותוספות" data-en="Validation &amp; addition form">טופס תיקוף ותוספות</strong><span data-he="לכל תובנה" data-en="For each insight">לכל תובנה</span></span></li>
+                    <li><span><strong data-he="תזכורות אוטומטיות" data-en="Automated reminders">תזכורות אוטומטיות</strong><span data-he="למי שלא הגיב" data-en="For non-responders">למי שלא הגיב</span></span></li>
                 </ul>
             </div>
         </div>
@@ -813,29 +846,30 @@
         <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
 
         <!-- STEP 6 -->
-        <div class="step" style="--phase-grad: var(--phase-validate); --phase-color: var(--phase-validate-solid);">
+        <div class="step">
             <div class="step-top">
                 <div class="step-num">6</div>
                 <div class="step-head">
-                    <h2>איסוף תוספות ואישורים</h2>
-                    <p>איסוף שיטתי של תגובות ה-VPs — אישורים, תיקונים, תוספות והערות. כל מענה משויך לתובנה המקורית, והתובנות מתעדכנות בהתאם.</p>
+                    <h2 data-he="איסוף תוספות ואישורים" data-en="Collecting Additions and Approvals">איסוף תוספות ואישורים</h2>
+                    <p data-he="איסוף שיטתי של תגובות ה-VPs — אישורים, תיקונים, תוספות והערות. כל מענה משויך לתובנה המקורית, והתובנות מתעדכנות בהתאם."
+                       data-en="Systematic collection of VP responses — approvals, corrections, additions, and comments. Each response is linked to its original insight, and insights are updated accordingly.">איסוף שיטתי של תגובות ה-VPs — אישורים, תיקונים, תוספות והערות. כל מענה משויך לתובנה המקורית, והתובנות מתעדכנות בהתאם.</p>
                 </div>
-                <span class="phase-label">תיקוף</span>
+                <span class="phase-label" data-he="תיקוף" data-en="Validation">תיקוף</span>
             </div>
             <div class="step-meta">
                 <div class="meta-block">
                     <div class="meta-label">
                         <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
-                        סוכן
+                        <span data-he="סוכן" data-en="Agent">סוכן</span>
                     </div>
                     <div class="chips">
-                        <span class="chip agent">סוכן איסוף ותיוג תגובות</span>
+                        <span class="chip agent" data-he="סוכן איסוף ותיוג תגובות" data-en="Response collection &amp; tagging agent">סוכן איסוף ותיוג תגובות</span>
                     </div>
                 </div>
                 <div class="meta-block">
                     <div class="meta-label">
                         <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                        סקילים
+                        <span data-he="סקילים" data-en="Skills">סקילים</span>
                     </div>
                     <div class="chips">
                         <span class="chip">Response tracking</span>
@@ -846,16 +880,14 @@
             </div>
             <div class="outputs">
                 <div class="outputs-header">
-                    <div class="outputs-icon">
-                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <div class="outputs-title">תוצרים</div>
+                    <div class="outputs-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                    <div class="outputs-title" data-he="תוצרים" data-en="Deliverables">תוצרים</div>
                 </div>
                 <ul class="outputs-list">
-                    <li><span><strong>מאגר תגובות מתויג</strong>לפי VP, לפי תובנה</span></li>
-                    <li><span><strong>דוח השלמת מענה</strong>מי ענה, מי לא, מה התעדוף</span></li>
-                    <li><span><strong>תובנות מעודכנות</strong>גרסה V2 עם תיקונים</span></li>
-                    <li><span><strong>תובנות חדשות</strong>שעלו מתגובות ה-VPs</span></li>
+                    <li><span><strong data-he="מאגר תגובות מתויג" data-en="Tagged response repository">מאגר תגובות מתויג</strong><span data-he="לפי VP, לפי תובנה" data-en="By VP, by insight">לפי VP, לפי תובנה</span></span></li>
+                    <li><span><strong data-he="דוח השלמת מענה" data-en="Response completion report">דוח השלמת מענה</strong><span data-he="מי ענה, מי לא, מה התעדוף" data-en="Who answered, who didn't, what's the priority">מי ענה, מי לא, מה התעדוף</span></span></li>
+                    <li><span><strong data-he="תובנות מעודכנות" data-en="Updated insights">תובנות מעודכנות</strong><span data-he="גרסה V2 עם תיקונים" data-en="V2 with corrections">גרסה V2 עם תיקונים</span></span></li>
+                    <li><span><strong data-he="תובנות חדשות" data-en="New insights">תובנות חדשות</strong><span data-he="שעלו מתגובות ה-VPs" data-en="That emerged from VP responses">שעלו מתגובות ה-VPs</span></span></li>
                 </ul>
             </div>
         </div>
@@ -863,50 +895,49 @@
         <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
 
         <!-- STEP 7 -->
-        <div class="step" style="--phase-grad: var(--phase-final); --phase-color: var(--phase-final-solid);">
+        <div class="step">
             <div class="step-top">
                 <div class="step-num">7</div>
                 <div class="step-head">
-                    <h2>קונסולידציה — מגמות, הבדלים וייחודיות</h2>
-                    <p>מה חוזר על עצמו בכמה יחידות (מגמה רוחבית), מה ייחודי ליחידה אחת, ואיפה יש פערי תפיסה בין VPs. הבסיס לבניית תוכנית הלמידה השנתית.</p>
+                    <h2 data-he="קונסולידציה — מגמות, הבדלים וייחודיות" data-en="Consolidation — Trends, Differences, and Uniqueness">קונסולידציה — מגמות, הבדלים וייחודיות</h2>
+                    <p data-he="מה חוזר על עצמו בכמה יחידות (מגמה רוחבית), מה ייחודי ליחידה אחת, ואיפה יש פערי תפיסה בין VPs. הבסיס לבניית תוכנית הלמידה השנתית."
+                       data-en="What repeats across units (horizontal trend), what's unique to one unit, and where there are perception gaps between VPs. The foundation for the annual learning plan.">מה חוזר על עצמו בכמה יחידות (מגמה רוחבית), מה ייחודי ליחידה אחת, ואיפה יש פערי תפיסה בין VPs. הבסיס לבניית תוכנית הלמידה השנתית.</p>
                 </div>
-                <span class="phase-label">סיכום</span>
+                <span class="phase-label" data-he="סיכום" data-en="Consolidation">סיכום</span>
             </div>
             <div class="step-meta">
                 <div class="meta-block">
                     <div class="meta-label">
                         <svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 5v4"/><path d="M9 5h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/></svg>
-                        סוכן
+                        <span data-he="סוכן" data-en="Agent">סוכן</span>
                     </div>
                     <div class="chips">
-                        <span class="chip agent">סוכן קונסולידציה</span>
+                        <span class="chip agent" data-he="סוכן קונסולידציה" data-en="Consolidation agent">סוכן קונסולידציה</span>
                     </div>
                 </div>
                 <div class="meta-block">
                     <div class="meta-label">
                         <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                        סקילים
+                        <span data-he="סקילים" data-en="Skills">סקילים</span>
                     </div>
                     <div class="chips">
                         <span class="chip">Cross-unit clustering</span>
-                        <span class="chip">Gap & uniqueness analysis</span>
+                        <span class="chip">Gap &amp; uniqueness analysis</span>
                         <span class="chip">Prioritization (RICE / MoSCoW)</span>
                     </div>
                 </div>
             </div>
             <div class="outputs">
                 <div class="outputs-header">
-                    <div class="outputs-icon">
-                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <div class="outputs-title">תוצרים</div>
+                    <div class="outputs-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                    <div class="outputs-title" data-he="תוצרים" data-en="Deliverables">תוצרים</div>
                 </div>
                 <ul class="outputs-list">
-                    <li><span><strong>מסמך מסכם</strong>צרכי הלמידה לשנה הקרובה</span></li>
-                    <li><span><strong>מפת צרכים שנתית</strong>לפי יחידה, תחום, ודחיפות</span></li>
-                    <li><span><strong>מגמות רוחביות</strong>נושאים שחוזרים בכמה יחידות</span></li>
-                    <li><span><strong>צרכים ייחודיים</strong>מה דורש פתרון מקומי</span></li>
-                    <li><span><strong>תעדוף ראשוני</strong>בסיס לתוכנית למידה שנתית</span></li>
+                    <li><span><strong data-he="מסמך מסכם" data-en="Summary document">מסמך מסכם</strong><span data-he="צרכי הלמידה לשנה הקרובה" data-en="Learning needs for the coming year">צרכי הלמידה לשנה הקרובה</span></span></li>
+                    <li><span><strong data-he="מפת צרכים שנתית" data-en="Annual needs map">מפת צרכים שנתית</strong><span data-he="לפי יחידה, תחום, ודחיפות" data-en="By unit, domain, and urgency">לפי יחידה, תחום, ודחיפות</span></span></li>
+                    <li><span><strong data-he="מגמות רוחביות" data-en="Horizontal trends">מגמות רוחביות</strong><span data-he="נושאים שחוזרים בכמה יחידות" data-en="Topics that repeat across units">נושאים שחוזרים בכמה יחידות</span></span></li>
+                    <li><span><strong data-he="צרכים ייחודיים" data-en="Unique needs">צרכים ייחודיים</strong><span data-he="מה דורש פתרון מקומי" data-en="What requires a local solution">מה דורש פתרון מקומי</span></span></li>
+                    <li><span><strong data-he="תעדוף ראשוני" data-en="Initial prioritization">תעדוף ראשוני</strong><span data-he="בסיס לתוכנית למידה שנתית" data-en="Basis for annual learning plan">בסיס לתוכנית למידה שנתית</span></span></li>
                 </ul>
             </div>
         </div>
@@ -914,9 +945,41 @@
     </div>
 
     <footer>
-        <strong>תהליך ניתוח צרכים שנתי</strong> · AI-First L&D Platform
+        <strong data-he="תהליך ניתוח צרכים שנתי" data-en="Annual Needs Analysis Process">תהליך ניתוח צרכים שנתי</strong> · AI-First L&D Platform
     </footer>
 
 </div>
+
+<script>
+(function() {
+    const STORAGE_KEY = 'lna-lang';
+
+    function applyLanguage(lang) {
+        const html = document.documentElement;
+        html.lang = lang;
+        html.dir = lang === 'he' ? 'rtl' : 'ltr';
+
+        document.querySelectorAll('[data-he][data-en]').forEach(el => {
+            const val = el.dataset[lang];
+            if (val !== undefined) el.textContent = val;
+        });
+
+        const label = document.querySelector('.lang-toggle-label');
+        if (label) label.textContent = lang === 'he' ? 'EN' : 'עברית';
+
+        try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
+    }
+
+    window.toggleLanguage = function() {
+        const current = document.documentElement.lang || 'he';
+        applyLanguage(current === 'he' ? 'en' : 'he');
+    };
+
+    let initial = 'he';
+    try { initial = localStorage.getItem(STORAGE_KEY) || 'he'; } catch (e) {}
+    applyLanguage(initial);
+})();
+</script>
+
 </body>
 </html>
